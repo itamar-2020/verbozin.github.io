@@ -1,109 +1,88 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Site oficial do Instituto Verbo Zin">
-  <title>Instituto Verbo Zin</title>
+  <title>Verbo Zin Institute</title>
+  <link rel="icon" href="logo.png">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
       margin: 0;
-      padding: 0;
-      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      background-color: #fff8ed;
+      color: #333;
     }
     header {
-      background: #2c3e50;
-      color: #fff;
-      padding: 20px 0;
+      background-color: #f4e1b8;
+      padding: 20px;
       text-align: center;
+    }
+    header img {
+      max-height: 100px;
     }
     nav {
-      background: #34495e;
-      text-align: center;
-      padding: 10px 0;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
+      background-color: #e3cfa6;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 10px;
       font-weight: bold;
     }
-    .container {
-      padding: 20px;
-      max-width: 1000px;
-      margin: auto;
-      background: white;
+    nav a {
+      color: #333;
+      text-decoration: none;
+    }
+    section {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
     footer {
-      background: #2c3e50;
-      color: white;
+      background-color: #f4e1b8;
       text-align: center;
-      padding: 15px 0;
-      margin-top: 40px;
+      padding: 15px;
+      font-size: 0.9em;
     }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background: #27ae60;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-    .btn:hover {
-      background: #219150;
+    h2 {
+      color: #8c6239;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Instituto Verbo Zin</h1>
-    <p>Transformando vidas através da Palavra e da ação missionária</p>
+    <img src="logo.png" alt="Verbo Zin Institute Logo">
   </header>
-  
   <nav>
-    <a href="#missao">Missão</a>
+    <a href="#sobre">Sobre</a>
     <a href="#projetos">Projetos</a>
-    <a href="#doacoes">Doações</a>
+    <a href="#apps">Apps</a>
     <a href="#contato">Contato</a>
   </nav>
+  
+  <section id="sobre">
+    <h2>Sobre o Instituto</h2>
+    <p>O Verbo Zin Institute é uma organização cristã, missionária e educacional sem fins lucrativos, comprometida com a proclamação da Palavra, tradução bíblica e apoio a ações sociais e culturais em regiões estratégicas.</p>
+  </section>
 
-  <div class="container">
-    <section id="missao">
-      <h2>Nossa Missão</h2>
-      <p>O Instituto Verbo Zin é uma organização cristã sem fins lucrativos dedicada à tradução bíblica, ação missionária, apoio educacional e projetos de impacto social no Brasil e no mundo. Nossa missão é levar a Palavra de Deus aonde ela ainda não chegou, com excelência, integridade e compaixão.</p>
-    </section>
+  <section id="projetos">
+    <h2>Projetos</h2>
+    <p>Atuamos com tradução e publicação de versões bíblicas, desenvolvimento de aplicativos, suporte a escolas cristãs, apoio a missionários e ações assistenciais.</p>
+  </section>
 
-    <section id="projetos">
-      <h2>Projetos em Andamento</h2>
-      <ul>
-        <li>📱 Desenvolvimento de aplicativos bíblicos em português e inglês (AMP e NASB)</li>
-        <li>📖 Tradução da Bíblia – Versão Esperança Viva (amplificada, fiel ao grego e hebraico)</li>
-        <li>🏨 Criação de um hotel missionário para recepção de alunos e ministros</li>
-        <li>🌍 Captação internacional de recursos para ações missionárias no sertão e na África</li>
-      </ul>
-    </section>
+  <section id="apps">
+    <h2>Apps Bíblicos</h2>
+    <p>Estamos desenvolvendo dois aplicativos: um com as versões AMP/NASB (inglês) e outro com a versão Esperança Viva (português), com o objetivo de fortalecer a fé cristã e apoiar projetos missionários por meio de sua monetização simbólica.</p>
+  </section>
 
-    <section id="doacoes">
-      <h2>Seja um Parceiro</h2>
-      <p>Seu apoio é fundamental para alcançarmos mais vidas com a Palavra de Deus e com ações práticas de transformação social. Você pode doar de forma segura e transparente.</p>
-      <a class="btn" href="mailto:contato@verbozin.org">Quero Doar</a>
-    </section>
-
-    <section id="contato">
-      <h2>Contato</h2>
-      <p>Email: <a href="mailto:contato@verbozin.org">contato@verbozin.org</a></p>
-      <p>Endereço: Av. Otacílio Nepomuceno, 100 – Loja 09 – Bairro Catolé – Campina Grande/PB</p>
-    </section>
-  </div>
+  <section id="contato">
+    <h2>Contato</h2>
+    <p>Email: contato@verbozin.org<br>
+    Instagram: @verbozin<br>
+    Endereço: Av. Otacílio Nepomuceno, 100 – Campina Grande/PB</p>
+  </section>
 
   <footer>
-    <p>&copy; 2025 Instituto Verbo Zin – Todos os direitos reservados</p>
+    <p>&copy; 2025 Verbo Zin Institute. Todos os direitos reservados.</p>
   </footer>
 </body>
 </html>
