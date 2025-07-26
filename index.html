@@ -1,124 +1,92 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verbo Zin Institute</title>
-  <link rel="icon" href="logotipo.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap">
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Open Sans', sans-serif;
       background-color: #ffffff;
-      color: #222;
+      color: #1a1a1a;
     }
     header {
-      background-color: #002147;
+      background-color: #002f5f;
+      color: white;
       padding: 20px;
       text-align: center;
     }
     header img {
-      max-height: 100px;
+      max-height: 80px;
     }
     nav {
-      background-color: #004080;
+      background-color: #003f7f;
       display: flex;
       justify-content: center;
-      gap: 30px;
-      padding: 12px;
-      font-weight: bold;
+      padding: 10px;
+      flex-wrap: wrap;
     }
     nav a {
-      color: #FFD700;
+      color: white;
       text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
     }
     nav a:hover {
       text-decoration: underline;
     }
     section {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 0 20px;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #002f5f;
+    }
+    .btn-doar {
+      background-color: #d4af37;
+      color: #002f5f;
+      padding: 12px 24px;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 20px;
     }
     footer {
-      background-color: #002147;
+      background-color: #002f5f;
+      color: white;
       text-align: center;
-      padding: 15px;
-      font-size: 0.9em;
-      color: #FFD700;
-    }
-    h2 {
-      color: #002147;
-      border-bottom: 2px solid #FFD700;
-      padding-bottom: 5px;
-    }
-    .doar-btn {
-      display: inline-block;
-      background-color: #FFD700;
-      color: #002147;
-      padding: 12px 24px;
-      font-weight: bold;
-      border-radius: 5px;
-      text-decoration: none;
-      margin-top: 10px;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <img src="logotipo.png" alt="Verbo Zin Institute Logo">
+    <img src="logotipo.png" alt="Logo Verbo Zin Institute">
+    <h1>Verbo Zin Institute</h1>
+    <p>Transformando vidas por meio da Palavra e da ação</p>
   </header>
+
   <nav>
     <a href="#sobre">Sobre</a>
     <a href="#projetos">Projetos</a>
+    <a href="#portfolio">Portfólio</a>
     <a href="#apps">Apps</a>
-    <a href="#doacao">Doação</a>
     <a href="#contato">Contato</a>
   </nav>
 
   <section id="sobre">
     <h2>Sobre o Instituto</h2>
-    <p>O Verbo Zin Institute é uma organização cristã, missionária, educacional e filantrópica sem fins lucrativos. Nosso propósito é proclamar a Palavra de Deus com fidelidade, promovendo a edificação da fé cristã, a formação de líderes e o apoio a comunidades carentes por meio da educação, cultura e ação social.</p>
-    <p>Atuamos em diversas frentes, desde tradução bíblica até desenvolvimento de tecnologias que facilitam o acesso às Escrituras, com impacto local e global.</p>
+    <p>O Verbo Zin Institute é uma organização missionária, educacional e assistencial comprometida com a transformação de vidas por meio da Bíblia, da fé e da ação prática. Atuamos com projetos locais e internacionais em prol da verdade, da dignidade humana e da esperança cristã.</p>
   </section>
 
   <section id="projetos">
     <h2>Projetos</h2>
-    <p>Nossos projetos incluem:</p>
     <ul>
-      <li>Tradução e adaptação da Bíblia Sagrada para novos formatos e públicos</li>
-      <li>Desenvolvimento de aplicativos bíblicos com recursos missionários</li>
-      <li>Implantação de escolas confessionais cristãs</li>
-      <li>Apoio a famílias missionárias e comunidades vulneráveis</li>
-      <li>Parcerias com ministérios e instituições internacionais</li>
-    </ul>
-  </section>
-
-  <section id="apps">
-    <h2>Apps Bíblicos</h2>
-    <p>Estamos desenvolvendo dois aplicativos:</p>
-    <ul>
-      <li><strong>AMP/NASB (inglês):</strong> versões licenciadas da Lockman Foundation, com interface leve e acessível.</li>
-      <li><strong>Esperança Viva (português):</strong> uma tradução fiel ao texto original, em estilo amplificado, acessível e fiel às Escrituras.</li>
-    </ul>
-    <p>Ambos os apps terão propósito missionário, com arrecadação simbólica voltada para apoio de projetos sociais.</p>
-  </section>
-
-  <section id="doacao">
-    <h2>Como Contribuir</h2>
-    <p>Você pode apoiar nossos projetos missionários e educacionais com doações:</p>
-    <a href="https://paypal.me/verbozin" target="_blank" class="doar-btn">Doar via PayPal</a>
-  </section>
-
-  <section id="contato">
-    <h2>Contato</h2>
-    <p>Email: contato@verbozin.org<br>
-    Instagram: @verbozin<br>
-    Endereço: Av. Otacílio Nepomuceno, 100 – Campina Grande/PB</p>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Verbo Zin Institute. Todos os direitos reservados.</p>
-  </footer>
-</body>
-</html>
+      <li><strong>App AMP PT-BR:</strong> Aplicativo bíblico com tradução amplificada para o português</li>
+      <li><strong>Captação Missionária:</strong> Parcerias com instituições nacionais e internacionais</li>
+      <li><strong>Escola Cristã
