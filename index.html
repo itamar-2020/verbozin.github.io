@@ -43,7 +43,7 @@
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        alert(`Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : 'Geral'}\nTipo: ${formData.recurring === 'single' ? 'Única' : 'Mensal'}`);
+        alert(`Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : formData.purpose === 'hunger' ? 'Combate à Fome' : 'Geral'}\nTipo: ${formData.recurring === 'single' ? 'Única' : 'Mensal'}`);
         setFormData({ name: '', email: '', amount: '', purpose: 'general', recurring: 'single' });
       };
 
@@ -169,4 +169,69 @@
                 </div>
                 <div className="bg-white p-4 rounded shadow">
                   <h4 className="text-lg font-semibold">Combate à Fome</h4>
-                  <p>Distribuímos cestas básicas para 200 famílias em Campina Grande, combatendo a fome com amor e
+                  <p>Distribuímos cestas básicas para 200 famílias em Campina Grande, combatendo a fome com amor e solidariedade.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Aplicativos Bíblicos */}
+            <section id="aplicativos" className="py-8">
+              <h2 className="text-3xl font-bold text-blue-900 mb-4">Aplicativos Bíblicos</h2>
+              <p className="text-lg mb-4">
+                Como parte de nossa missão de divulgar a palavra de Deus em formatos acessíveis, recomendamos aplicativos bíblicos confiáveis e buscamos recursos para traduzir versões como a New American Standard Bible (NASB) e Amplified Bible (AMP) para o português.
+              </p>
+              <h3 className="text-xl font-semibold mb-2">Aplicativos Recomendados</h3>
+              <ul className="list-disc pl-6 mb-4">
+                <li>
+                  <a href="https://play.google.com/store/apps/details?id=com.sir.nasb.bible" className="text-blue-600 hover:underline" target="_blank">
+                    NASB Bible (Google Play)
+                  </a>: Leia a Bíblia em inglês com alta precisão e recursos como anotações e leitura offline.
+                </li>
+                <li>
+                  <a href="https://www.bible.com/bible/1588/GEN.1.AMP" className="text-blue-600 hover:underline" target="_blank">
+                    Amplified Bible (YouVersion)
+                  </a>: Acesse a AMP em inglês com amplificações que enriquecem a compreensão dos textos bíblicos.
+                </li>
+              </ul>
+              <p className="text-lg">
+                Estamos trabalhando para traduzir e adaptar essas versões para o português (PT-BR). Sua doação pode ajudar a tornar isso realidade! Veja como contribuir na seção <a href="#investidores" className="text-blue-600 hover:underline">Investidores</a>.
+              </p>
+            </section>
+
+            {/* Transparência */}
+            <section id="transparência" className="py-8">
+              <h2 className="text-3xl font-bold text-blue-900 mb-4">Transparência</h2>
+              <p className="text-lg mb-4">
+                Comprometidos com a transparência e a legalidade (Art. 14 do Estatuto), publicamos relatórios anuais de atividades e impacto. Veja como usamos suas doações para transformar vidas.
+              </p>
+              <div className="bg-white p-6 rounded shadow">
+                <h3 className="text-xl font-semibold mb-2">Relatórios e Balanços</h3>
+                <ul className="list-disc pl-6">
+                  <li><a href="#" className="text-blue-600 hover:underline">Relatório Anual 2024 (Em breve)</a></li>
+                  <li><a href="#" className="text-blue-600 hover:underline">Balanço Financeiro 2024 (Em breve)</a></li>
+                  <li><a href="#" className="text-blue-600 hover:underline">Relatório de Impacto: Combate à Fome 2024 (Em breve)</a></li>
+                </ul>
+                <p className="text-lg mt-4">
+                  80% das doações são destinadas diretamente a projetos missionários e sociais, 15% a custos operacionais e 5% a reservas para sustentabilidade, conforme nossa política de transparência.
+                </p>
+              </div>
+            </section>
+          </div>
+          <footer className="bg-blue-900 text-white p-4 text-center">
+            <p>Instituto Verbo Vivo Zin - Av. Otacílio Neomuceno, 100, Coliseum Center, Loja 09, Catolé, Campina Grande/PB</p>
+            <p>Siga-nos: 
+              <a href="https://twitter.com" className="text-blue-300 hover:underline mx-2" target="_blank">Twitter</a> | 
+              <a href="https://facebook.com" className="text-blue-300 hover:underline mx-2" target="_blank">Facebook</a> | 
+              <a href="https://instagram.com" className="text-blue-300 hover:underline mx-2" target="_blank">Instagram</a>
+            </p>
+            <p>© 2025 - Todos os direitos reservados</p>
+          </footer>
+        </div>
+      );
+    };
+
+    // Renderizar o aplicativo
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
