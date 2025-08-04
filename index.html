@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instituto Verbo Vivo Zin</title>
   <meta name="description" content="Instituto Verbo Vivo Zin - Saciando a fome e semeando a palavra de Deus através de ações missionárias, educacionais e sociais.">
-  <meta name="keywords" content="Bíblia, missão cristã, doações, transparência, NASB, AMP, aplicativos bíblicos">
+  <meta name="keywords" content="Bíblia, missão cristã, doações, transparência, NASB, AMP, aplicativos bíblicos, combate à fome">
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.9/babel.min.js"></script>
@@ -35,7 +35,7 @@
 
     // Componente Principal
     const App = () => {
-      const [formData, setFormData] = useState({ name: '', email: '', amount: '', purpose: 'general' });
+      const [formData, setFormData] = useState({ name: '', email: '', amount: '', purpose: 'general', recurring: 'single' });
 
       const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,14 +43,21 @@
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        alert(`Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : 'Geral'}`);
-        setFormData({ name: '', email: '', amount: '', purpose: 'general' });
+        alert(`Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : 'Geral'}\nTipo: ${formData.recurring === 'single' ? 'Única' : 'Mensal'}`);
+        setFormData({ name: '', email: '', amount: '', purpose: 'general', recurring: 'single' });
       };
 
       return (
         <div className="min-h-screen bg-gray-100">
           <Navbar />
           <div className="container mx-auto p-4">
+            {/* Hero Section */}
+            <section className="bg-blue-900 text-white py-12 text-center">
+              <h2 className="text-4xl font-bold mb-4">Saciando a Fome, Semeando a Palavra</h2>
+              <p className="text-lg mb-6">Junte-se à nossa missão de transformar vidas através da palavra de Deus e ações de impacto social.</p>
+              <a href="#investidores" className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600">Doe Agora</a>
+            </section>
+
             {/* Missão */}
             <section id="missão" className="py-8">
               <h2 className="text-3xl font-bold text-blue-900 mb-4">Nossa Missão</h2>
@@ -123,16 +130,27 @@
                   >
                     <option value="general">Doação Geral</option>
                     <option value="translation">Tradução de Aplicativos Bíblicos</option>
+                    <option value="hunger">Combate à Fome</option>
+                  </select>
+                  <label className="block mb-2">Tipo de Doação</label>
+                  <select
+                    name="recurring"
+                    value={formData.recurring}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded mb-4"
+                  >
+                    <option value="single">Doação Única</option>
+                    <option value="monthly">Doação Mensal</option>
                   </select>
                   <button
                     onClick={handleSubmit}
-                    className="bg-blue-900 text-white p-2 rounded hover:bg-blue-700"
+                    className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
                   >
                     Enviar Doação
                   </button>
                 </div>
                 <p className="text-sm mt-4">
-                  *Após o envio, entraremos em contato para orientações sobre o pagamento.
+                  *Após o envio, entraremos em contato para orientações sobre o pagamento. Aceitamos PayPal para doações internacionais.
                 </p>
               </div>
             </section>
@@ -140,60 +158,15 @@
             {/* Portfólio */}
             <section id="portfólio" className="py-8">
               <h2 className="text-3xl font-bold text-blue-900 mb-4">Portfólio</h2>
-              <p className="text-lg">
-                Nosso portfólio inclui iniciativas como a distribuição de Bíblias, programas de alfabetização cristã, apoio a comunidades carentes e projetos de capacitação. Em breve, publicaremos relatórios detalhados de impacto.
-              </p>
-            </section>
-
-            {/* Aplicativos Bíblicos */}
-            <section id="aplicativos" className="py-8">
-              <h2 className="text-3xl font-bold text-blue-900 mb-4">Aplicativos Bíblicos</h2>
               <p className="text-lg mb-4">
-                Como parte de nossa missão de divulgar a palavra de Deus em formatos acessíveis, recomendamos aplicativos bíblicos confiáveis e buscamos recursos para traduzir versões como a New American Standard Bible (NASB) e Amplified Bible (AMP) para o português.
+                Nosso portfólio inclui iniciativas como a distribuição de Bíblias, programas de alfabetização cristã, apoio a comunidades carentes e projetos de capacitação.
               </p>
-              <h3 className="text-xl font-semibold mb-2">Aplicativos Recomendados</h3>
-              <ul className="list-disc pl-6 mb-4">
-                <li>
-                  <a href="https://play.google.com/store/apps/details?id=com.sir.nasb.bible" className="text-blue-600 hover:underline" target="_blank">
-                    NASB Bible (Google Play)
-                  </a>: Leia a Bíblia em inglês com alta precisão e recursos como anotações e leitura offline.[](https://play.google.com/store/apps/details?id=com.bible.biblenewamericanstandard&amp%253Bhl=pt_BR)
-                </li>
-                <li>
-                  <a href="https://www.bible.com/bible/1588/GEN.1.AMP" className="text-blue-600 hover:underline" target="_blank">
-                    Amplified Bible (YouVersion)
-                  </a>: Acesse a AMP em inglês com amplificações que enriquecem a compreensão dos textos bíblicos.[](https://www.bible.com/pt/versions/1588-amp-amplified-bible)
-                </li>
-              </ul>
-              <p className="text-lg">
-                Estamos trabalhando para traduzir e adaptar essas versões para o português (PT-BR). Sua doação pode ajudar a tornar isso realidade! Veja como contribuir na seção <a href="#investidores" className="text-blue-600 hover:underline">Investidores</a>.
-              </p>
-            </section>
-
-            {/* Transparência */}
-            <section id="transparência" className="py-8">
-              <h2 className="text-3xl font-bold text-blue-900 mb-4">Transparência</h2>
-              <p className="text-lg mb-4">
-                Comprometidos com a transparência e a legalidade (Art. 14 do Estatuto), publicamos relatórios anuais de atividades e impacto. Abaixo, você pode acessar nossos relatórios contábeis e de projetos.
-              </p>
-              <ul className="list-disc pl-6">
-                <li><a href="#" className="text-blue-600 hover:underline">Relatório Anual 2024 (Em breve)</a></li>
-                <li><a href="#" className="text-blue-600 hover:underline">Balanço Financeiro 2024 (Em breve)</a></li>
-              </ul>
-              <p className="text-lg mt-4">
-                Nossa escrituração contábil é regular, e todas as doações, incluindo aquelas para tradução de aplicativos bíblicos, são destinadas exclusivamente aos objetivos institucionais, garantindo confiança e solidez aos nossos doadores.
-              </p>
-            </section>
-          </div>
-          <footer className="bg-blue-900 text-white p-4 text-center">
-            <p>Instituto Verbo Vivo Zin - Av. Otacílio Neomuceno, 100, Coliseum Center, Loja 09, Catolé, Campina Grande/PB</p>
-            <p>© 2025 - Todos os direitos reservados</p>
-          </footer>
-        </div>
-      );
-    };
-
-    // Renderizar o aplicativo
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
-</body>
-</html>
+              <h3 className="text-xl font-semibold mb-2">Histórias de Impacto</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded shadow">
+                  <h4 className="text-lg font-semibold">Distribuição de Bíblias no Sertão</h4>
+                  <p>Em 2024, entregamos 500 Bíblias a comunidades carentes no interior da Paraíba, levando esperança e a palavra de Deus.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                  <h4 className="text-lg font-semibold">Combate à Fome</h4>
+                  <p>Distribuímos cestas básicas para 200 famílias em Campina Grande, combatendo a fome com amor e
