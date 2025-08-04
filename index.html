@@ -26,7 +26,7 @@
         <ul className="flex space-x-4">
           {['Missão', 'Projetos', 'Parceiros', 'Investidores', 'Portfólio', 'Aplicativos', 'Transparência'].map((item) => (
             <li key={item}>
-              <a href={#${item.toLowerCase()}} className="hover:text-blue-300">{item}</a>
+              <a href={`#${item.toLowerCase()}`} className="hover:text-blue-300">{item}</a>
             </li>
           ))}
         </ul>
@@ -43,7 +43,7 @@
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        alert(Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : formData.purpose === 'hunger' ? 'Combate à Fome' : 'Geral'}\nTipo: ${formData.recurring === 'single' ? 'Única' : 'Mensal'});
+        alert(`Doação registrada!\nNome: ${formData.name}\nEmail: ${formData.email}\nValor: ${formData.amount}\nFinalidade: ${formData.purpose === 'translation' ? 'Tradução de Aplicativos Bíblicos' : formData.purpose === 'hunger' ? 'Combate à Fome' : 'Geral'}\nTipo: ${formData.recurring === 'single' ? 'Única' : 'Mensal'}`);
         setFormData({ name: '', email: '', amount: '', purpose: 'general', recurring: 'single' });
       };
 
