@@ -1,137 +1,336 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Instituto Verbo Vivo Zin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Instituto Verbo Vivo Zin — notícias, clima e cotações com atualização automática.">
-  <link rel="icon" href="logo.png">
+
+  <!-- Tailwind -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css">
+
+  <!-- Font Awesome (para ícones de status) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
-    :root {
-      --bg: #0f172a;       /* slate-900 */
-      --panel: #111827;    /* gray-900 */
-      --muted: #94a3b8;    /* slate-400 */
-      --text: #e5e7eb;     /* gray-200 */
-      --accent: #22d3ee;   /* cyan-400 */
-      --ring: #22d3ee;
-      --card: #0b1021;     /* darker panel */
-    }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f8fafc;     /* slate-50 */
-        --panel: #ffffff;  /* white */
-        --muted: #475569;  /* slate-600 */
-        --text: #0f172a;   /* slate-900 */
-        --accent: #0ea5e9; /* sky-500 */
-        --ring: #0ea5e9;
-        --card: #f1f5f9;   /* slate-100 */
-      }
-    }
-    * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-    header { display:flex; align-items:center; gap:16px; padding: 16px 0 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
-    header img { width: 48px; height: 48px; object-fit: contain; }
-    h1 { font-size: clamp(22px, 4vw, 32px); margin:0; }
-    .subtitle { color: var(--muted); margin: 4px 0 0 0; font-size: 14px; }
-    main { padding: 24px 0 48px; }
-    .grid { display:grid; gap:16px; grid-template-columns: repeat(12, 1fr); }
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.25);
-    }
-    .card h2 { margin:0 0 8px; font-size: 18px; }
-    .prose { color: var(--muted); }
-    #weather.card { grid-column: span 12; }
-    #fx.card { grid-column: span 6; }
-    #news.card { grid-column: span 6; }
-    @media (max-width: 820px) {
-      #fx.card, #news.card { grid-column: span 12; }
-    }
-    ul { list-style: none; padding:0; margin:0; }
-    li { padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,.08); }
-    li:last-child { border-bottom: 0; }
-    .footer { color: var(--muted); font-size: 13px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,.08); }
-    .sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-    :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 10px; }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-    }
+    @keyframes fade-in { from{opacity:0} to{opacity:1} }
+    .animate-fade-in { animation: fade-in 1s ease-in; }
+    .swiper-container { max-height: 180px; overflow: hidden; }
+    .swiper-slide { padding: 10px; }
   </style>
 </head>
-<body>
-  <a class="sr-only" href="#conteudo">Pular para o conteúdo</a>
-  <div class="container">
-    <header>
-      <img src="logo.png" alt="Logotipo Verbo Vivo Zin" loading="lazy">
-      <div>
-        <h1>Instituto Verbo Vivo Zin</h1>
-        <p class="subtitle">Informações atualizadas: clima, cotações e notícias — com acessibilidade e desempenho.</p>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- HEADER -->
+  <header class="bg-blue-900 text-white pt-6 pb-10">
+    <!-- Faixa branca para o logo -->
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="bg-white rounded-xl shadow-lg mx-auto mb-6 flex items-center justify-center h-24 w-full">
+        <!-- IMPORTANTE: ajuste o src se o arquivo do logo tiver outro nome/caminho -->
+        <img src="logo.png" alt="Logo Instituto Verbo Vivo Zin" class="h-16 object-contain" />
       </div>
-    </header>
 
-    <main id="conteudo">
-      <section class="grid" id="status" aria-live="polite">
-        <div id="weather" class="card" role="region" aria-label="Clima atual em Fortaleza">
-          <h2>Clima</h2>
-          <p id="weather-text">Carregando…</p>
+      <h1 class="text-3xl md:text-4xl font-bold text-center">Instituto Verbo Vivo Zin</h1>
+      <p class="text-center text-lg mt-2">
+        Saciando a fome e semeando a Palavra de Deus através de ações missionárias, educacionais e sociais.
+      </p>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="bg-blue-800 text-white flex flex-wrap justify-center gap-6 p-4 font-semibold">
+    <a href="#missao" class="hover:text-yellow-300">Missão</a>
+    <a href="#valores" class="hover:text-yellow-300">Valores</a>
+    <a href="#principios" class="hover:text-yellow-300">Princípios Bíblicos</a>
+    <a href="#projetos" class="hover:text-yellow-300">Projetos</a>
+    <a href="#investidores" class="hover:text-yellow-300">Doações</a>
+    <a href="#transparencia" class="hover:text-yellow-300">Transparência</a>
+  </nav>
+
+  <!-- BANNER DINÂMICO -->
+  <section class="max-w-5xl mx-auto p-6">
+    <div id="banner" class="animate-fade-in">
+      <div id="banner-loading" class="p-4 text-center text-gray-600 bg-white rounded-lg shadow">
+        Carregando atualizações...
+      </div>
+
+      <div id="banner-content" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
+        <!-- Clima -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="font-bold text-blue-900 mb-2">Clima em João Pessoa, PB</h3>
+          <div id="weather">Carregando...</div>
         </div>
 
-        <div id="fx" class="card" role="region" aria-label="Cotações BRL">
-          <h2>Cotações</h2>
-          <ul id="fx-list" aria-busy="true"></ul>
+        <!-- Cotações -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="font-bold text-blue-900 mb-2">Cotações (USD/EUR para BRL)</h3>
+          <div id="currency">Carregando...</div>
         </div>
 
-        <div id="news" class="card" role="region" aria-label="Notícias">
-          <h2>Notícias</h2>
-          <ul id="news-list" aria-busy="true"></ul>
+        <!-- Notícias -->
+        <div class="bg-white rounded-lg shadow p-4">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-bold text-blue-900">Notícias: África e Sertão</h3>
+            <span id="news-status" class="text-xs text-gray-500"></span>
+          </div>
+
+          <div id="news" class="swiper-container">
+            <div class="swiper-wrapper">
+              <!-- slides vão aqui -->
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      <section class="card prose" style="margin-top:16px">
-        <h2>Sobre</h2>
-        <p>
-          Este site agora usa um <strong>proxy seguro</strong> (Cloudflare Workers) para acessar APIs de clima, câmbio e notícias
-          sem expor chaves sensíveis no navegador. Requisições possuem <em>timeout</em>, <em>retry exponencial</em> e cache
-          tipo <em>stale-while-revalidate</em>.
-        </p>
-      </section>
-    </main>
+  <!-- MAIN -->
+  <main class="max-w-5xl mx-auto p-6">
+    <section id="missao" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Nossa Missão</h2>
+      <p class="text-lg">
+        Saciando a fome e semeando a palavra de Deus, o Instituto Verbo Vivo Zin promove o ensino e estudo da Bíblia,
+        sua divulgação em formatos acessíveis, e ações missionárias para atender necessidades espirituais e materiais.
+      </p>
+    </section>
 
-    <footer class="footer">
-      <p>© <span id="ano"></span> Instituto Verbo Vivo Zin — Todos os direitos reservados.</p>
-    </footer>
-  </div>
+    <section id="valores" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Nossos Valores</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Fidelidade à Palavra de Deus</li>
+        <li>Transparência e integridade institucional</li>
+        <li>Serviço ao próximo com compaixão e diligência</li>
+        <li>Educação bíblica com excelência</li>
+        <li>Impacto social cristocêntrico</li>
+      </ul>
+    </section>
 
-  <!-- Widgets VerboZin -->
-  <link rel="preload" href="assets/js/fetcher.js" as="script">
-  <script src="assets/js/fetcher.js" defer></script>
-  <script src="assets/js/weather.js" defer></script>
-  <script src="assets/js/currency.js" defer></script>
-  <script src="assets/js/news.js" defer></script>
+    <section id="principios" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Princípios Bíblicos que nos norteiam</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Mateus 25:35-40</strong> – Servimos a Cristo ao servir aos pequeninos.</li>
+        <li><strong>Tiago 1:27</strong> – A verdadeira religião inclui cuidar dos necessitados.</li>
+        <li><strong>Romanos 10:14-15</strong> – A proclamação da Palavra é essencial à salvação.</li>
+        <li><strong>Provérbios 31:8-9</strong> – Defendemos os direitos dos pobres e necessitados.</li>
+        <li><strong>Atos 20:35</strong> – “Mais bem-aventurado é dar que receber.”</li>
+      </ul>
+    </section>
+
+    <section id="projetos" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Projetos em Ação</h2>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Publicação de versões bíblicas (AMP e NASB) em inglês.</li>
+        <li>Tradução livre da bíblia grega de versões bíblicas em Português.</li>
+        <li>Desenvolvimento de aplicativos bíblicos gratuitos.</li>
+        <li>Distribuição de cestas básicas e refeições em comunidades carentes.</li>
+        <li>Capacitação cristã e técnica em regiões de vulnerabilidade.</li>
+      </ul>
+    </section>
+
+    <section id="investidores" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Seja um Investidor da Esperança</h2>
+      <p class="mb-4">Contribua com nossa missão. Toda doação é transformada em ação concreta para o Reino de Deus.</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#" class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">Doar via PicPay</a>
+        <a href="#" class="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Doar via Mercado Pago</a>
+      </div>
+    </section>
+
+    <section id="transparencia" class="mb-12">
+      <h2 class="text-2xl font-bold text-blue-900 mb-4">Transparência</h2>
+      <p>Todos os relatórios de atividade, prestação de contas e demonstrações de impacto estarão disponíveis aqui.</p>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-blue-900 text-white text-center p-6">
+    <p>Instituto Verbo Vivo Zin – Av. Otacílio Nepomuceno, 100, Coliseum Center, Loja 09 – Catolé – Campina Grande/PB</p>
+    <p class="mt-2">© 2025 – Todos os direitos reservados</p>
+  </footer>
+
+  <!-- Swiper JS -->
+  <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
+
   <script>
-    // ano no rodapé
-    document.addEventListener('DOMContentLoaded', () => {
-      const y = new Date().getFullYear();
-      const el = document.getElementById('ano');
-      if (el) el.textContent = y;
-    });
+    // ==========================================
+    // Configuração do Worker (sem chaves no front)
+    // ==========================================
+    const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
 
-    window.addEventListener('DOMContentLoaded', () => {
-      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      // URL do seu Cloudflare Worker
-      const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
-      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    // ==== Utilidades de cache (mantidas) ====
+    function cacheData(key, data, ttl = 30 * 60 * 1000) {
+      const now = Date.now();
+      localStorage.setItem(key, JSON.stringify({ data, expiry: now + ttl }));
+    }
+    function getCachedData(key) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      try {
+        const { data, expiry } = JSON.parse(raw);
+        if (Date.now() < expiry) return data;
+        localStorage.removeItem(key);
+      } catch {
+        localStorage.removeItem(key);
+      }
+      return null;
+    }
 
-      // Inicialização dos widgets
-      AppWeather.init({ city: 'Fortaleza, BR', lang: 'pt', baseApi: BASE_API });
-      AppCurrency.init(['USD','EUR'], BASE_API);
-      AppNews.init('geral', BASE_API);
+    // ==== Helpers UI (mantidos) ====
+    function showBannerContent() {
+      document.getElementById('banner-loading').classList.add('hidden');
+      document.getElementById('banner-content').classList.remove('hidden');
+    }
+    function updateNewsStatus(status, isError = false) {
+      const icon = isError ? 'fa-exclamation-circle text-red-500' : 'fa-check-circle text-green-500';
+      document.getElementById('news-status').innerHTML = `<i class="fas ${icon} mr-1"></i>${status}`;
+    }
+    const esc = s => (s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    // ======================
+    // CLIMA (via Worker)
+    // ======================
+    async function fetchWeather() {
+      const cached = getCachedData('weather');
+      if (cached) { document.getElementById('weather').innerHTML = cached; return; }
+
+      const city = 'João Pessoa,BR';
+      const url = `${BASE_API}/api/weather?q=${encodeURIComponent(city)}&lang=pt`;
+      try {
+        const r = await fetch(url, { method: 'GET' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json(); // WeatherAPI (pass-through no Worker)
+
+        const cond = data?.current?.condition?.text || 'Tempo';
+        const temp = data?.current?.temp_c;
+        const hum = data?.current?.humidity;
+
+        const html = `
+          <p>${esc(cond)}</p>
+          <p>Temperatura: ${typeof temp === 'number' ? temp : '-'}°C</p>
+          <p>Umidade: ${typeof hum === 'number' ? hum : '-'}%</p>
+          <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
+        `;
+        document.getElementById('weather').innerHTML = html;
+        cacheData('weather', html);
+      } catch (e) {
+        document.getElementById('weather').innerHTML = 'Não foi possível carregar o clima.';
+      }
+    }
+
+    // ==========================================
+    // COTAÇÕES (BRL por 1 USD/EUR) via Worker
+    // ==========================================
+    async function fetchCurrency() {
+      const cached = getCachedData('currency');
+      if (cached) { document.getElementById('currency').innerHTML = cached; return; }
+
+      const url = `${BASE_API}/api/currency?base=USD,EUR`;
+      try {
+        const r = await fetch(url, { method: 'GET' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json(); // { rates: { USD: <brl>, EUR: <brl> } }
+
+        const usdBrl = data?.rates?.USD;
+        const eurBrl = data?.rates?.EUR;
+
+        const html = `
+          <p>USD → BRL: R$ ${typeof usdBrl === 'number' ? usdBrl.toFixed(2) : '-'}</p>
+          <p>EUR → BRL: R$ ${typeof eurBrl === 'number' ? eurBrl.toFixed(2) : '-'}</p>
+          <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
+        `;
+        document.getElementById('currency').innerHTML = html;
+        cacheData('currency', html);
+      } catch {
+        document.getElementById('currency').innerHTML = 'Não foi possível carregar cotações.';
+      }
+    }
+
+    // ======================
+    // NOTÍCIAS (via Worker)
+    // ======================
+    async function fetchNews() {
+      const cached = getCachedData('news');
+      if (cached && Array.isArray(cached)) {
+        updateNewsCarousel(cached);
+        updateNewsStatus('Notícias carregadas do cache.');
+        return;
+      }
+
+      const url = `${BASE_API}/api/news?topic=${encodeURIComponent('África Sertão')}&limit=5`;
+      try {
+        const r = await fetch(url, { method: 'GET' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const items = await r.json(); // [{title,url,source,publishedAt}]
+        if (!Array.isArray(items) || items.length === 0) {
+          document.getElementById('news').innerHTML = '<p>Nenhuma notícia disponível no momento.</p>';
+          updateNewsStatus('Nenhuma notícia no momento.', true);
+          new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
+          return;
+        }
+
+        const newsData = items.slice(0,5).map(a => ({
+          title: a.title,
+          link: a.url,
+          description: a.source ? `Fonte: ${a.source}` : '',
+          pubDate: a.publishedAt ? new Date(a.publishedAt) : new Date()
+        }));
+
+        updateNewsCarousel(newsData);
+        cacheData('news', newsData);
+        updateNewsStatus('Notícias carregadas com sucesso.');
+      } catch (e) {
+        document.getElementById('news').innerHTML = '<p>Não foi possível carregar notícias.</p>';
+        updateNewsStatus('Erro ao carregar notícias.', true);
+      }
+    }
+
+    function updateNewsCarousel(news) {
+      const wrapper = document.querySelector('#news .swiper-wrapper');
+      if (!Array.isArray(news) || news.length === 0) {
+        wrapper.innerHTML = `<div class="swiper-slide"><p>Nenhuma notícia disponível no momento.</p></div>`;
+        updateNewsStatus('Nenhuma notícia disponível.', true);
+        new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
+        return;
+      }
+
+      wrapper.innerHTML = news.map(item => `
+        <div class="swiper-slide">
+          <p class="mb-2"><a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${esc(item.title)}</a></p>
+          <p class="text-sm text-gray-600">${esc(item.description ? item.description.substring(0, 100) + '…' : '')}</p>
+        </div>
+      `).join('');
+
+      // info de atualização
+      const info = document.querySelector('#news .last-update');
+      if (info) info.remove();
+      wrapper.insertAdjacentHTML('afterend',
+        `<p class="last-update text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`);
+
+      new Swiper('#news', {
+        pagination: { el: '.swiper-pagination' },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        autoplay: { delay: 5000 },
+        loop: news.length > 1
+      });
+    }
+
+    // Inicialização (mantendo seu fluxo)
+    Promise.all([fetchWeather(), fetchCurrency(), fetchNews()]).then(showBannerContent);
+
+    // Atualizações a cada 30 min
+    setInterval(() => { fetchWeather(); fetchCurrency(); fetchNews(); }, 1800000);
+
+    // Navegação suave (mantida)
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+      });
     });
   </script>
 </body>
