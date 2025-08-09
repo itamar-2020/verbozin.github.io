@@ -1,424 +1,138 @@
-
-
-
-  
-  
-  
-  
-  Instituto Verbo Vivo Zin
-  
-  
-  
-  
-    @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Instituto Verbo Vivo Zin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Instituto Verbo Vivo Zin — notícias, clima e cotações com atualização automática.">
+  <link rel="icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #0f172a;       /* slate-900 */
+      --panel: #111827;    /* gray-900 */
+      --muted: #94a3b8;    /* slate-400 */
+      --text: #e5e7eb;     /* gray-200 */
+      --accent: #22d3ee;   /* cyan-400 */
+      --ring: #22d3ee;
+      --card: #0b1021;     /* darker panel */
     }
-    .animate-fade-in {
-      animation: fade-in 1s ease-in;
-    }
-    .swiper-container {
-      max-height: 180px;
-      overflow: hidden;
-    }
-    .swiper-slide {
-      padding: 10px;
-    }
-  
-
-
-  
-  
-    
-  
-  
-  
-    Instituto Verbo Vivo Zin
-    
-      Saciando a fome e semeando a Palavra de Deus através de ações missionárias, educacionais e sociais.
-    
-  
-  
-  
-    Missão
-    Valores
-    Princípios Bíblicos
-    Projetos
-    Doações
-    Transparência
-  
-  
-  
-     Carregando atualizações...
-    
-      
-      
-        Clima em João Pessoa, PB
-        
-          Carregando...
-        
-      
-      
-      
-        Cotações (USD/EUR para BRL)
-        
-          Carregando...
-        
-      
-      
-      
-        Notícias: África e Sertão
-        
-          
-          
-          
-          
-        
-        
-      
-    
-  
-  
-  
-    
-      Nossa Missão
-      
-        Saciando a fome e semeando a palavra de Deus, o Instituto Verbo Vivo Zin promove o ensino e estudo da Bíblia,
-        sua divulgação em formatos acessíveis, e ações missionárias para atender necessidades espirituais e materiais.
-      
-    
-    
-      Nossos Valores
-      
-        Fidelidade à Palavra de Deus
-        Transparência e integridade institucional
-        Serviço ao próximo com compaixão e diligência
-        Educação bíblica com excelência
-        Impacto social cristocêntrico
-      
-    
-    
-      Princípios Bíblicos que nos norteiam
-      
-        Mateus 25:35-40 – Servimos a Cristo ao servir aos pequeninos.
-        Tiago 1:27 – A verdadeira religião inclui cuidar dos necessitados.
-        Romanos 10:14-15 – A proclamação da Palavra é essencial à salvação.
-        Provérbios 31:8-9 – Defendemos os direitos dos pobres e necessitados.
-        Atos 20:35 – "Mais bem-aventurado é dar que receber."
-      
-    
-    
-      Projetos em Ação
-      
-        Publicação de versões bíblicas (AMP e NASB) em inglês.
-        Tradução livre da bíblia grega de versões bíblicas em Português.
-        Desenvolvimento de aplicativos bíblicos gratuitos.
-        Distribuição de cestas básicas e refeições em comunidades carentes.
-        Capacitação cristã e técnica em regiões de vulnerabilidade.
-      
-    
-    
-      Seja um Investidor da Esperança
-      Contribua com nossa missão. Toda doação é transformada em ação concreta para o Reino de Deus.
-      
-        Doar via PicPay
-        Doar via Mercado Pago
-      
-    
-    
-      Transparência
-      Todos os relatórios de atividade, prestação de contas e demonstrações de impacto estarão disponíveis aqui.
-    
-  
-  
-  
-    Instituto Verbo Vivo Zin – Av. Otacílio Nepomuceno, 100, Coliseum Center, Loja 09 – Catolé – Campina Grande/PB
-    © 2025 – Todos os direitos reservados
-  
-  
-  
-  
-    // Configuração das chaves de API
-    const API_KEYS = {
-      openWeatherMap: 'ff3081d251c4a12d9f099026fc2cf1cd',
-      exchangeRate: '7ebcb6c05d4e2fe217622115',
-      newsApi: '12693d13804243b6b9072692dcb36184'
-    };
-
-<pre><code>// Funções de cache
-function cacheData(key, data, ttl = 1800000) {
-  const now = new Date().getTime();
-  localStorage.setItem(key, JSON.stringify({ data, expiry: now + ttl }));
-}
-function getCachedData(key) {
-  const cached = localStorage.getItem(key);
-  if (cached) {
-    try {
-      const { data, expiry } = JSON.parse(cached);
-      if (new Date().getTime() &lt; expiry) return data;
-    } catch (e) {
-      console.error(`Erro ao parsear cache ${key}:`, e);
-      localStorage.removeItem(key); // Limpa cache corrompido
-    }
-  }
-  return null;
-}
-
-// Função para mostrar o conteúdo do banner
-function showBannerContent() {
-  document.getElementById(&#39;banner-loading&#39;).style.display = &#39;none&#39;;
-  document.getElementById(&#39;banner-content&#39;).style.display = &#39;grid&#39;;
-}
-
-// Função para atualizar o status de notícias
-function updateNewsStatus(status, isError = false) {
-  document.getElementById(&#39;news-status&#39;).innerHTML = `&lt;i class=&quot;fas ${isError ? &#39;fa-exclamation-circle text-red-500&#39; : &#39;fa-check-circle text-green-500&#39;} mr-1&quot;&gt;&lt;/i&gt;${status}`;
-}
-
-// Função para buscar dados do clima (OpenWeatherMap API)
-async function fetchWeather() {
-  const cached = getCachedData(&#39;weather&#39;);
-  if (cached) {
-    document.getElementById(&#39;weather&#39;).innerHTML = cached;
-    return;
-  }
-  const city = &#39;João Pessoa,BR&#39;;
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&amp;appid=${API_KEYS.openWeatherMap}&amp;units=metric&amp;lang=pt_br`;
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.cod === 200) {
-      const html = `
-        &lt;p&gt;${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}&lt;/p&gt;
-        &lt;p&gt;Temperatura: ${data.main.temp}°C&lt;/p&gt;
-        &lt;p&gt;Umidade: ${data.main.humidity}%&lt;/p&gt;
-        &lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;
-      `;
-      document.getElementById(&#39;weather&#39;).innerHTML = html;
-      cacheData(&#39;weather&#39;, html);
-    } else {
-      console.error(&#39;Erro na API OpenWeatherMap:&#39;, data.message);
-      document.getElementById(&#39;weather&#39;).innerHTML = `Erro: ${data.message || &#39;Não foi possível carregar o clima.&#39;} Tente novamente mais tarde.`;
-    }
-  } catch (error) {
-    console.error(&#39;Erro ao chamar OpenWeatherMap:&#39;, error);
-    document.getElementById(&#39;weather&#39;).innerHTML = &#39;Não foi possível carregar o clima. Verifique sua conexão ou a chave da API.&#39;;
-  }
-}
-
-// Função para buscar cotações de moedas (ExchangeRate-API)
-async function fetchCurrency() {
-  const cached = getCachedData(&#39;currency&#39;);
-  if (cached) {
-    document.getElementById(&#39;currency&#39;).innerHTML = cached;
-    return;
-  }
-  const url = `https://v6.exchangerate-api.com/v6/${API_KEYS.exchangeRate}/latest/BRL`;
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.result === &#39;success&#39;) {
-      const html = `
-        &lt;p&gt;USD/BRL: ${data.conversion_rates.USD.toFixed(2)}&lt;/p&gt;
-        &lt;p&gt;EUR/BRL: ${data.conversion_rates.EUR.toFixed(2)}&lt;/p&gt;
-        &lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;
-      `;
-      document.getElementById(&#39;currency&#39;).innerHTML = html;
-      cacheData(&#39;currency&#39;, html);
-    } else {
-      console.error(&#39;Erro na API ExchangeRate:&#39;, data.error_type);
-      document.getElementById(&#39;currency&#39;).innerHTML = &#39;Não foi possível carregar cotações. Tente novamente mais tarde.&#39;;
-    }
-  } catch (error) {
-    console.error(&#39;Erro ao chamar ExchangeRate-API:&#39;, error);
-    document.getElementById(&#39;currency&#39;).innerHTML = &#39;Não foi possível carregar cotações. Verifique sua conexão.&#39;;
-  }
-}
-
-// Função para buscar notícias via RSS
-async function fetchNews() {
-  const cached = getCachedData(&#39;news&#39;);
-  if (cached &amp;&amp; Array.isArray(cached)) {
-    updateNewsCarousel(cached);
-    updateNewsStatus(&#39;Notícias carregadas do cache.&#39;);
-    return;
-  }
-  const rssUrls = [
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/pb/paraiba/rss&#39;,
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://jornaldaparaiba.com.br/rss&#39;,
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.vaticannews.va/pt.rss.xml&#39;,
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=http://www.angop.ao/angola/en_us/noticias/feed.xml&#39;,
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.mnnonline.org/feed/&#39;,
-    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.christianaid.org.uk/rss&#39;
-  ];
-  try {
-    let allNews = [];
-    for (const url of rssUrls) {
-      console.log(&#39;Buscando RSS:&#39;, url);
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.status === &#39;ok&#39; &amp;&amp; Array.isArray(data.items)) {
-        const filteredNews = data.items
-          .filter(item =&gt; {
-            const text = (item.title + &#39; &#39; + (item.description || &#39;&#39;) + &#39; &#39; + (item.content || &#39;&#39;)).toLowerCase();
-            const relevant = (text.includes(&#39;sertão&#39;) ||
-                             text.includes(&#39;crianças&#39;) ||
-                             text.includes(&#39;fome&#39;) ||
-                             text.includes(&#39;desnutrição&#39;) ||
-                             text.includes(&#39;morte&#39;) ||
-                             text.includes(&#39;áfrica&#39;) ||
-                             text.includes(&#39;angola&#39;) ||
-                             text.includes(&#39;revolta&#39;) ||
-                             text.includes(&#39;guerra&#39;) ||
-                             text.includes(&#39;pobreza&#39;) ||
-                             text.includes(&#39;desigualdade&#39;) ||
-                             text.includes(&#39;carência&#39;) ||
-                             text.includes(&#39;seca&#39;) ||
-                             text.includes(&#39;violência&#39;) ||
-                             text.includes(&#39;conflito&#39;) ||
-                             text.includes(&#39;missão&#39;) ||
-                             text.includes(&#39;caridade&#39;) ||
-                             text.includes(&#39;humanitária&#39;) ||
-                             text.includes(&#39;igreja&#39;) ||
-                             text.includes(&#39;cristã&#39;) ||
-                             text.includes(&#39;solidariedade&#39;)) &amp;&amp;
-                            !text.includes(&#39;show&#39;) &amp;&amp;
-                            !text.includes(&#39;festival&#39;) &amp;&amp;
-                            !text.includes(&#39;cantor&#39;) &amp;&amp;
-                            !text.includes(&#39;música&#39;) &amp;&amp;
-                            !text.includes(&#39;concerto&#39;) &amp;&amp;
-                            !text.includes(&#39;evento&#39;) &amp;&amp;
-                            !text.includes(&#39;esporte&#39;) &amp;&amp;
-                            !text.includes(&#39;artista&#39;) &amp;&amp;
-                            !text.includes(&#39;show cultural&#39;) &amp;&amp;
-                            !text.includes(&#39;apresentação&#39;) &amp;&amp;
-                            !text.includes(&#39;teatro&#39;) &amp;&amp;
-                            !text.includes(&#39;dança&#39;);
-            return relevant;
-          })
-          .map(item =&gt; ({
-            title: item.title,
-            link: item.link,
-            description: item.description || &#39;&#39;,
-            pubDate: new Date(item.pubDate || new Date())
-          }));
-        console.log(`Notícias filtradas de ${url}:`, filteredNews.length);
-        allNews = allNews.concat(filteredNews);
-      } else {
-        console.error(`Erro no RSS ${url}:`, data.message || &#39;Falha ao carregar feed&#39;);
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;     /* slate-50 */
+        --panel: #ffffff;  /* white */
+        --muted: #475569;  /* slate-600 */
+        --text: #0f172a;   /* slate-900 */
+        --accent: #0ea5e9; /* sky-500 */
+        --ring: #0ea5e9;
+        --card: #f1f5f9;   /* slate-100 */
       }
     }
-    allNews.sort((a, b) =&gt; b.pubDate - a.pubDate);
-    console.log(&#39;Total de notícias encontradas:&#39;, allNews.length);
-    if (allNews.length === 0) {
-      updateNewsStatus(&#39;Nenhuma notícia encontrada nos feeds RSS. Tentando NewsAPI...&#39;, true);
-      await fetchNewsFallback();
-      return;
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; gap:16px; padding: 16px 0 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    header img { width: 48px; height: 48px; object-fit: contain; }
+    h1 { font-size: clamp(22px, 4vw, 32px); margin:0; }
+    .subtitle { color: var(--muted); margin: 4px 0 0 0; font-size: 14px; }
+    main { padding: 24px 0 48px; }
+    .grid { display:grid; gap:16px; grid-template-columns: repeat(12, 1fr); }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
     }
-    const newsData = allNews.slice(0, 5);
-    updateNewsCarousel(newsData);
-    cacheData(&#39;news&#39;, JSON.stringify(newsData));
-    updateNewsStatus(&#39;Notícias carregadas com sucesso.&#39;);
-  } catch (error) {
-    console.error(&#39;Erro ao carregar notícias RSS:&#39;, error);
-    updateNewsStatus(&#39;Erro ao carregar notícias RSS. Tentando NewsAPI...&#39;, true);
-    await fetchNewsFallback();
-  }
-}
-
-// Função para buscar notícias via NewsAPI (fallback)
-async function fetchNewsFallback() {
-  const query = &#39;(pobreza OR crianças OR fome OR desnutrição OR morte OR revolta OR guerra OR seca OR violência OR conflito OR missão OR caridade OR humanitária OR igreja OR cristã OR solidariedade) AND (Sertão OR África OR Angola) -show -festival -cantor -música -concerto -evento -esporte -artista -show cultural -apresentação -teatro -dança&#39;;
-  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&amp;sortBy=publishedAt&amp;apiKey=${API_KEYS.newsApi}`;
-  try {
-    console.log(&#39;Buscando NewsAPI:&#39;, url);
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.status === &#39;ok&#39; &amp;&amp; Array.isArray(data.articles)) {
-      const newsData = data.articles
-        .filter(article =&gt; {
-          const text = (article.title + &#39; &#39; + (article.description || &#39;&#39;)).toLowerCase();
-          return !text.includes(&#39;show&#39;) &amp;&amp; 
-                 !text.includes(&#39;festival&#39;) &amp;&amp; 
-                 !text.includes(&#39;cantor&#39;) &amp;&amp; 
-                 !text.includes(&#39;música&#39;) &amp;&amp; 
-                 !text.includes(&#39;concerto&#39;) &amp;&amp; 
-                 !text.includes(&#39;evento&#39;) &amp;&amp; 
-                 !text.includes(&#39;esporte&#39;) &amp;&amp; 
-                 !text.includes(&#39;artista&#39;) &amp;&amp;
-                 !text.includes(&#39;show cultural&#39;) &amp;&amp;
-                 !text.includes(&#39;apresentação&#39;) &amp;&amp;
-                 !text.includes(&#39;teatro&#39;) &amp;&amp;
-                 !text.includes(&#39;dança&#39;);
-        })
-        .slice(0, 5)
-        .map(article =&gt; ({
-          title: article.title,
-          link: article.url,
-          description: article.description || &#39;&#39;,
-          pubDate: new Date(article.publishedAt)
-        }));
-      updateNewsCarousel(newsData);
-      cacheData(&#39;news&#39;, JSON.stringify(newsData));
-      updateNewsStatus(&#39;Notícias carregadas via NewsAPI.&#39;);
-    } else {
-      console.error(&#39;Nenhuma notícia encontrada na NewsAPI:&#39;, data.message || &#39;Sem resultados&#39;);
-      document.getElementById(&#39;news&#39;).innerHTML = `&lt;p&gt;Nenhuma notícia encontrada no momento. Novas notícias serão exibidas em breve.&lt;/p&gt;`;
-      updateNewsStatus(&#39;Nenhuma notícia encontrada na NewsAPI.&#39;, true);
+    .card h2 { margin:0 0 8px; font-size: 18px; }
+    .prose { color: var(--muted); }
+    #weather.card { grid-column: span 12; }
+    #fx.card { grid-column: span 6; }
+    #news.card { grid-column: span 6; }
+    @media (max-width: 820px) {
+      #fx.card, #news.card { grid-column: span 12; }
     }
-  } catch (error) {
-    console.error(&#39;Erro ao carregar notícias NewsAPI:&#39;, error);
-    document.getElementById(&#39;news&#39;).innerHTML = `&lt;p&gt;Não foi possível carregar notícias. Verifique sua conexão.&lt;/p&gt;`;
-    updateNewsStatus(&#39;Erro ao carregar notícias NewsAPI.&#39;, true);
-  }
-}
+    ul { list-style: none; padding:0; margin:0; }
+    li { padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,.08); }
+    li:last-child { border-bottom: 0; }
+    .footer { color: var(--muted); font-size: 13px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,.08); }
+    .sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 10px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#conteudo">Pular para o conteúdo</a>
+  <div class="container">
+    <header>
+      <img src="logo.png" alt="Logotipo Verbo Vivo Zin" loading="lazy">
+      <div>
+        <h1>Instituto Verbo Vivo Zin</h1>
+        <p class="subtitle">Informações atualizadas: clima, cotações e notícias — com acessibilidade e desempenho.</p>
+      </div>
+    </header>
 
-// Função para atualizar o carrossel de notícias
-function updateNewsCarousel(news) {
-  const wrapper = document.querySelector(&#39;#news .swiper-wrapper&#39;);
-  if (!Array.isArray(news) || news.length === 0) {
-    wrapper.innerHTML = `&lt;div class=&quot;swiper-slide&quot;&gt;&lt;p&gt;Nenhuma notícia disponível no momento.&lt;/p&gt;&lt;/div&gt;`;
-    updateNewsStatus(&#39;Nenhuma notícia disponível.&#39;, true);
-    new Swiper(&#39;#news&#39;, { pagination: { el: &#39;.swiper-pagination&#39; } });
-    return;
-  }
-  wrapper.innerHTML = news.map(item =&gt; `
-    &lt;div class=&quot;swiper-slide&quot;&gt;
-      &lt;p class=&quot;mb-2&quot;&gt;&lt;a href=&quot;${item.link}&quot; target=&quot;_blank&quot; class=&quot;text-blue-600 hover:underline&quot;&gt;${item.title}&lt;/a&gt;&lt;/p&gt;
-      &lt;p class=&quot;text-sm text-gray-600&quot;&gt;${item.description ? item.description.substring(0, 100) + &#39;...&#39; : &#39;&#39;}&lt;/p&gt;
-    &lt;/div&gt;
-  `).join(&#39;&#39;);
-  wrapper.insertAdjacentHTML(&#39;afterend&#39;, `&lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;`);
-  new Swiper(&#39;#news&#39;, {
-    pagination: { el: &#39;.swiper-pagination&#39; },
-    navigation: {
-      nextEl: &#39;.swiper-button-next&#39;,
-      prevEl: &#39;.swiper-button-prev&#39;
-    },
-    autoplay: { delay: 5000 },
-    loop: news.length &gt; 1
-  });
-}
+    <main id="conteudo">
+      <section class="grid" id="status" aria-live="polite">
+        <div id="weather" class="card" role="region" aria-label="Clima atual em Fortaleza">
+          <h2>Clima</h2>
+          <p id="weather-text">Carregando…</p>
+        </div>
 
-// Executar as funções ao carregar a página
-Promise.all([fetchWeather(), fetchCurrency(), fetchNews()]).then(showBannerContent);
+        <div id="fx" class="card" role="region" aria-label="Cotações BRL">
+          <h2>Cotações</h2>
+          <ul id="fx-list" aria-busy="true"></ul>
+        </div>
 
-// Atualizar automaticamente a cada 30 minutos (1800000 ms)
-setInterval(() =&gt; {
-  fetchWeather();
-  fetchCurrency();
-  fetchNews();
-}, 1800000);
+        <div id="news" class="card" role="region" aria-label="Notícias">
+          <h2>Notícias</h2>
+          <ul id="news-list" aria-busy="true"></ul>
+        </div>
+      </section>
 
-// Adicionar navegação suave
-document.querySelectorAll(&#39;a[href^=&quot;#&quot;]&#39;).forEach(anchor =&gt; {
-  anchor.addEventListener(&#39;click&#39;, function(e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute(&#39;href&#39;)).scrollIntoView({
-      behavior: &#39;smooth&#39;
+      <section class="card prose" style="margin-top:16px">
+        <h2>Sobre</h2>
+        <p>
+          Este site agora usa um <strong>proxy seguro</strong> (Cloudflare Workers) para acessar APIs de clima, câmbio e notícias
+          sem expor chaves sensíveis no navegador. Requisições possuem <em>timeout</em>, <em>retry exponencial</em> e cache
+          tipo <em>stale-while-revalidate</em>.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="ano"></span> Instituto Verbo Vivo Zin — Todos os direitos reservados.</p>
+    </footer>
+  </div>
+
+  <!-- Widgets VerboZin -->
+  <link rel="preload" href="assets/js/fetcher.js" as="script">
+  <script src="assets/js/fetcher.js" defer></script>
+  <script src="assets/js/weather.js" defer></script>
+  <script src="assets/js/currency.js" defer></script>
+  <script src="assets/js/news.js" defer></script>
+  <script>
+    // ano no rodapé
+    document.addEventListener('DOMContentLoaded', () => {
+      const y = new Date().getFullYear();
+      const el = document.getElementById('ano');
+      if (el) el.textContent = y;
     });
-  });
-});
-</code></pre>
-<p>  
 
+    window.addEventListener('DOMContentLoaded', () => {
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      // URL do seu Cloudflare Worker
+      const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
+      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+      // Inicialização dos widgets
+      AppWeather.init({ city: 'Fortaleza, BR', lang: 'pt', baseApi: BASE_API });
+      AppCurrency.init(['USD','EUR'], BASE_API);
+      AppNews.init('geral', BASE_API);
+    });
+  </script>
+</body>
+</html>
