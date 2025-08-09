@@ -1,96 +1,424 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instituto Verbo Vivo Zin</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
-</head>
-<body class="bg-gray-100 text-gray-900">
 
-  <!-- FAIXA BRANCA (logo visível) -->
-  <div class="bg-white py-4">
-    <img src="logo.png" alt="Logo Instituto Verbo Vivo Zin" class="mx-auto h-20">
-  </div>
 
-  <!-- CABEÇALHO AZUL (título + subtítulo) -->
-  <header class="bg-blue-900 text-white p-6 text-center">
-    <h1 class="text-3xl font-bold">Instituto Verbo Vivo Zin</h1>
-    <p class="text-lg">
+
+  
+  
+  
+  
+  Instituto Verbo Vivo Zin
+  
+  
+  
+  
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fade-in {
+      animation: fade-in 1s ease-in;
+    }
+    .swiper-container {
+      max-height: 180px;
+      overflow: hidden;
+    }
+    .swiper-slide {
+      padding: 10px;
+    }
+  
+
+
+  
+  
+    
+  
+  
+  
+    Instituto Verbo Vivo Zin
+    
       Saciando a fome e semeando a Palavra de Deus através de ações missionárias, educacionais e sociais.
-    </p>
-  </header>
-
-  <!-- MENU -->
-  <nav class="bg-blue-800 text-white flex flex-wrap justify-center gap-6 p-4 font-semibold">
-    <a href="#missao" class="hover:text-yellow-300">Missão</a>
-    <a href="#valores" class="hover:text-yellow-300">Valores</a>
-    <a href="#principios" class="hover:text-yellow-300">Princípios Bíblicos</a>
-    <a href="#projetos" class="hover:text-yellow-300">Projetos</a>
-    <a href="#investidores" class="hover:text-yellow-300">Doações</a>
-    <a href="#transparencia" class="hover:text-yellow-300">Transparência</a>
-  </nav>
-
-  <!-- CONTEÚDO -->
-  <main class="max-w-5xl mx-auto p-6">
-    <section id="missao" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Nossa Missão</h2>
-      <p class="text-lg">
+    
+  
+  
+  
+    Missão
+    Valores
+    Princípios Bíblicos
+    Projetos
+    Doações
+    Transparência
+  
+  
+  
+     Carregando atualizações...
+    
+      
+      
+        Clima em João Pessoa, PB
+        
+          Carregando...
+        
+      
+      
+      
+        Cotações (USD/EUR para BRL)
+        
+          Carregando...
+        
+      
+      
+      
+        Notícias: África e Sertão
+        
+          
+          
+          
+          
+        
+        
+      
+    
+  
+  
+  
+    
+      Nossa Missão
+      
         Saciando a fome e semeando a palavra de Deus, o Instituto Verbo Vivo Zin promove o ensino e estudo da Bíblia,
         sua divulgação em formatos acessíveis, e ações missionárias para atender necessidades espirituais e materiais.
-      </p>
-    </section>
+      
+    
+    
+      Nossos Valores
+      
+        Fidelidade à Palavra de Deus
+        Transparência e integridade institucional
+        Serviço ao próximo com compaixão e diligência
+        Educação bíblica com excelência
+        Impacto social cristocêntrico
+      
+    
+    
+      Princípios Bíblicos que nos norteiam
+      
+        Mateus 25:35-40 – Servimos a Cristo ao servir aos pequeninos.
+        Tiago 1:27 – A verdadeira religião inclui cuidar dos necessitados.
+        Romanos 10:14-15 – A proclamação da Palavra é essencial à salvação.
+        Provérbios 31:8-9 – Defendemos os direitos dos pobres e necessitados.
+        Atos 20:35 – "Mais bem-aventurado é dar que receber."
+      
+    
+    
+      Projetos em Ação
+      
+        Publicação de versões bíblicas (AMP e NASB) em inglês.
+        Tradução livre da bíblia grega de versões bíblicas em Português.
+        Desenvolvimento de aplicativos bíblicos gratuitos.
+        Distribuição de cestas básicas e refeições em comunidades carentes.
+        Capacitação cristã e técnica em regiões de vulnerabilidade.
+      
+    
+    
+      Seja um Investidor da Esperança
+      Contribua com nossa missão. Toda doação é transformada em ação concreta para o Reino de Deus.
+      
+        Doar via PicPay
+        Doar via Mercado Pago
+      
+    
+    
+      Transparência
+      Todos os relatórios de atividade, prestação de contas e demonstrações de impacto estarão disponíveis aqui.
+    
+  
+  
+  
+    Instituto Verbo Vivo Zin – Av. Otacílio Nepomuceno, 100, Coliseum Center, Loja 09 – Catolé – Campina Grande/PB
+    © 2025 – Todos os direitos reservados
+  
+  
+  
+  
+    // Configuração das chaves de API
+    const API_KEYS = {
+      openWeatherMap: 'ff3081d251c4a12d9f099026fc2cf1cd',
+      exchangeRate: '7ebcb6c05d4e2fe217622115',
+      newsApi: '12693d13804243b6b9072692dcb36184'
+    };
 
-    <section id="valores" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Nossos Valores</h2>
-      <ul class="list-disc pl-6 space-y-2">
-        <li>Fidelidade à Palavra de Deus</li>
-        <li>Transparência e integridade institucional</li>
-        <li>Serviço ao próximo com compaixão e diligência</li>
-        <li>Educação bíblica com excelência</li>
-        <li>Impacto social cristocêntrico</li>
-      </ul>
-    </section>
+<pre><code>// Funções de cache
+function cacheData(key, data, ttl = 1800000) {
+  const now = new Date().getTime();
+  localStorage.setItem(key, JSON.stringify({ data, expiry: now + ttl }));
+}
+function getCachedData(key) {
+  const cached = localStorage.getItem(key);
+  if (cached) {
+    try {
+      const { data, expiry } = JSON.parse(cached);
+      if (new Date().getTime() &lt; expiry) return data;
+    } catch (e) {
+      console.error(`Erro ao parsear cache ${key}:`, e);
+      localStorage.removeItem(key); // Limpa cache corrompido
+    }
+  }
+  return null;
+}
 
-    <section id="principios" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Princípios Bíblicos que nos norteiam</h2>
-      <ul class="list-disc pl-6 space-y-2">
-        <li><strong>Mateus 25:35-40</strong> – Servimos a Cristo ao servir aos pequeninos.</li>
-        <li><strong>Tiago 1:27</strong> – A verdadeira religião inclui cuidar dos necessitados.</li>
-        <li><strong>Romanos 10:14-15</strong> – A proclamação da Palavra é essencial à salvação.</li>
-        <li><strong>Provérbios 31:8-9</strong> – Defendemos os direitos dos pobres e necessitados.</li>
-        <li><strong>Atos 20:35</strong> – "Mais bem-aventurado é dar que receber."</li>
-      </ul>
-    </section>
+// Função para mostrar o conteúdo do banner
+function showBannerContent() {
+  document.getElementById(&#39;banner-loading&#39;).style.display = &#39;none&#39;;
+  document.getElementById(&#39;banner-content&#39;).style.display = &#39;grid&#39;;
+}
 
-    <section id="projetos" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Projetos em Ação</h2>
-      <ul class="list-disc pl-6 space-y-2">
-        <li>Publicação de versões bíblicas (AMP e NASB) em inglês.</li>
-        <li>Tradução livre da bíblia grega de versões bíblicas em Português.</li>
-        <li>Desenvolvimento de aplicativos bíblicos gratuitos.</li>
-        <li>Distribuição de cestas básicas e refeições em comunidades carentes.</li>
-        <li>Capacitação cristã e técnica em regiões de vulnerabilidade.</li>
-      </ul>
-    </section>
+// Função para atualizar o status de notícias
+function updateNewsStatus(status, isError = false) {
+  document.getElementById(&#39;news-status&#39;).innerHTML = `&lt;i class=&quot;fas ${isError ? &#39;fa-exclamation-circle text-red-500&#39; : &#39;fa-check-circle text-green-500&#39;} mr-1&quot;&gt;&lt;/i&gt;${status}`;
+}
 
-    <section id="investidores" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Seja um Investidor da Esperança</h2>
-      <p class="mb-4">Contribua com nossa missão. Toda doação é transformada em ação concreta para o Reino de Deus.</p>
-      <a href="#" class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">Fazer uma Doação</a>
-    </section>
+// Função para buscar dados do clima (OpenWeatherMap API)
+async function fetchWeather() {
+  const cached = getCachedData(&#39;weather&#39;);
+  if (cached) {
+    document.getElementById(&#39;weather&#39;).innerHTML = cached;
+    return;
+  }
+  const city = &#39;João Pessoa,BR&#39;;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&amp;appid=${API_KEYS.openWeatherMap}&amp;units=metric&amp;lang=pt_br`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.cod === 200) {
+      const html = `
+        &lt;p&gt;${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}&lt;/p&gt;
+        &lt;p&gt;Temperatura: ${data.main.temp}°C&lt;/p&gt;
+        &lt;p&gt;Umidade: ${data.main.humidity}%&lt;/p&gt;
+        &lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;
+      `;
+      document.getElementById(&#39;weather&#39;).innerHTML = html;
+      cacheData(&#39;weather&#39;, html);
+    } else {
+      console.error(&#39;Erro na API OpenWeatherMap:&#39;, data.message);
+      document.getElementById(&#39;weather&#39;).innerHTML = `Erro: ${data.message || &#39;Não foi possível carregar o clima.&#39;} Tente novamente mais tarde.`;
+    }
+  } catch (error) {
+    console.error(&#39;Erro ao chamar OpenWeatherMap:&#39;, error);
+    document.getElementById(&#39;weather&#39;).innerHTML = &#39;Não foi possível carregar o clima. Verifique sua conexão ou a chave da API.&#39;;
+  }
+}
 
-    <section id="transparencia" class="mb-12">
-      <h2 class="text-2xl font-bold text-blue-900 mb-4">Transparência</h2>
-      <p>Todos os relatórios de atividade, prestação de contas e demonstrações de impacto estarão disponíveis aqui.</p>
-    </section>
-  </main>
+// Função para buscar cotações de moedas (ExchangeRate-API)
+async function fetchCurrency() {
+  const cached = getCachedData(&#39;currency&#39;);
+  if (cached) {
+    document.getElementById(&#39;currency&#39;).innerHTML = cached;
+    return;
+  }
+  const url = `https://v6.exchangerate-api.com/v6/${API_KEYS.exchangeRate}/latest/BRL`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.result === &#39;success&#39;) {
+      const html = `
+        &lt;p&gt;USD/BRL: ${data.conversion_rates.USD.toFixed(2)}&lt;/p&gt;
+        &lt;p&gt;EUR/BRL: ${data.conversion_rates.EUR.toFixed(2)}&lt;/p&gt;
+        &lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;
+      `;
+      document.getElementById(&#39;currency&#39;).innerHTML = html;
+      cacheData(&#39;currency&#39;, html);
+    } else {
+      console.error(&#39;Erro na API ExchangeRate:&#39;, data.error_type);
+      document.getElementById(&#39;currency&#39;).innerHTML = &#39;Não foi possível carregar cotações. Tente novamente mais tarde.&#39;;
+    }
+  } catch (error) {
+    console.error(&#39;Erro ao chamar ExchangeRate-API:&#39;, error);
+    document.getElementById(&#39;currency&#39;).innerHTML = &#39;Não foi possível carregar cotações. Verifique sua conexão.&#39;;
+  }
+}
 
-  <!-- RODAPÉ -->
-  <footer class="bg-blue-900 text-white text-center p-6">
-    <p>Instituto Verbo Vivo Zin – Av. Otacílio Nepomuceno, 100, Coliseum Center, Loja 09 – Catolé – Campina Grande/PB</p>
-    <p class="mt-2">© 2025 – Todos os direitos reservados</p>
-  </footer>
+// Função para buscar notícias via RSS
+async function fetchNews() {
+  const cached = getCachedData(&#39;news&#39;);
+  if (cached &amp;&amp; Array.isArray(cached)) {
+    updateNewsCarousel(cached);
+    updateNewsStatus(&#39;Notícias carregadas do cache.&#39;);
+    return;
+  }
+  const rssUrls = [
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/pb/paraiba/rss&#39;,
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://jornaldaparaiba.com.br/rss&#39;,
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.vaticannews.va/pt.rss.xml&#39;,
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=http://www.angop.ao/angola/en_us/noticias/feed.xml&#39;,
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.mnnonline.org/feed/&#39;,
+    &#39;https://api.rss2json.com/v1/api.json?rss_url=https://www.christianaid.org.uk/rss&#39;
+  ];
+  try {
+    let allNews = [];
+    for (const url of rssUrls) {
+      console.log(&#39;Buscando RSS:&#39;, url);
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === &#39;ok&#39; &amp;&amp; Array.isArray(data.items)) {
+        const filteredNews = data.items
+          .filter(item =&gt; {
+            const text = (item.title + &#39; &#39; + (item.description || &#39;&#39;) + &#39; &#39; + (item.content || &#39;&#39;)).toLowerCase();
+            const relevant = (text.includes(&#39;sertão&#39;) ||
+                             text.includes(&#39;crianças&#39;) ||
+                             text.includes(&#39;fome&#39;) ||
+                             text.includes(&#39;desnutrição&#39;) ||
+                             text.includes(&#39;morte&#39;) ||
+                             text.includes(&#39;áfrica&#39;) ||
+                             text.includes(&#39;angola&#39;) ||
+                             text.includes(&#39;revolta&#39;) ||
+                             text.includes(&#39;guerra&#39;) ||
+                             text.includes(&#39;pobreza&#39;) ||
+                             text.includes(&#39;desigualdade&#39;) ||
+                             text.includes(&#39;carência&#39;) ||
+                             text.includes(&#39;seca&#39;) ||
+                             text.includes(&#39;violência&#39;) ||
+                             text.includes(&#39;conflito&#39;) ||
+                             text.includes(&#39;missão&#39;) ||
+                             text.includes(&#39;caridade&#39;) ||
+                             text.includes(&#39;humanitária&#39;) ||
+                             text.includes(&#39;igreja&#39;) ||
+                             text.includes(&#39;cristã&#39;) ||
+                             text.includes(&#39;solidariedade&#39;)) &amp;&amp;
+                            !text.includes(&#39;show&#39;) &amp;&amp;
+                            !text.includes(&#39;festival&#39;) &amp;&amp;
+                            !text.includes(&#39;cantor&#39;) &amp;&amp;
+                            !text.includes(&#39;música&#39;) &amp;&amp;
+                            !text.includes(&#39;concerto&#39;) &amp;&amp;
+                            !text.includes(&#39;evento&#39;) &amp;&amp;
+                            !text.includes(&#39;esporte&#39;) &amp;&amp;
+                            !text.includes(&#39;artista&#39;) &amp;&amp;
+                            !text.includes(&#39;show cultural&#39;) &amp;&amp;
+                            !text.includes(&#39;apresentação&#39;) &amp;&amp;
+                            !text.includes(&#39;teatro&#39;) &amp;&amp;
+                            !text.includes(&#39;dança&#39;);
+            return relevant;
+          })
+          .map(item =&gt; ({
+            title: item.title,
+            link: item.link,
+            description: item.description || &#39;&#39;,
+            pubDate: new Date(item.pubDate || new Date())
+          }));
+        console.log(`Notícias filtradas de ${url}:`, filteredNews.length);
+        allNews = allNews.concat(filteredNews);
+      } else {
+        console.error(`Erro no RSS ${url}:`, data.message || &#39;Falha ao carregar feed&#39;);
+      }
+    }
+    allNews.sort((a, b) =&gt; b.pubDate - a.pubDate);
+    console.log(&#39;Total de notícias encontradas:&#39;, allNews.length);
+    if (allNews.length === 0) {
+      updateNewsStatus(&#39;Nenhuma notícia encontrada nos feeds RSS. Tentando NewsAPI...&#39;, true);
+      await fetchNewsFallback();
+      return;
+    }
+    const newsData = allNews.slice(0, 5);
+    updateNewsCarousel(newsData);
+    cacheData(&#39;news&#39;, JSON.stringify(newsData));
+    updateNewsStatus(&#39;Notícias carregadas com sucesso.&#39;);
+  } catch (error) {
+    console.error(&#39;Erro ao carregar notícias RSS:&#39;, error);
+    updateNewsStatus(&#39;Erro ao carregar notícias RSS. Tentando NewsAPI...&#39;, true);
+    await fetchNewsFallback();
+  }
+}
 
-</body>
-</html>
+// Função para buscar notícias via NewsAPI (fallback)
+async function fetchNewsFallback() {
+  const query = &#39;(pobreza OR crianças OR fome OR desnutrição OR morte OR revolta OR guerra OR seca OR violência OR conflito OR missão OR caridade OR humanitária OR igreja OR cristã OR solidariedade) AND (Sertão OR África OR Angola) -show -festival -cantor -música -concerto -evento -esporte -artista -show cultural -apresentação -teatro -dança&#39;;
+  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&amp;sortBy=publishedAt&amp;apiKey=${API_KEYS.newsApi}`;
+  try {
+    console.log(&#39;Buscando NewsAPI:&#39;, url);
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.status === &#39;ok&#39; &amp;&amp; Array.isArray(data.articles)) {
+      const newsData = data.articles
+        .filter(article =&gt; {
+          const text = (article.title + &#39; &#39; + (article.description || &#39;&#39;)).toLowerCase();
+          return !text.includes(&#39;show&#39;) &amp;&amp; 
+                 !text.includes(&#39;festival&#39;) &amp;&amp; 
+                 !text.includes(&#39;cantor&#39;) &amp;&amp; 
+                 !text.includes(&#39;música&#39;) &amp;&amp; 
+                 !text.includes(&#39;concerto&#39;) &amp;&amp; 
+                 !text.includes(&#39;evento&#39;) &amp;&amp; 
+                 !text.includes(&#39;esporte&#39;) &amp;&amp; 
+                 !text.includes(&#39;artista&#39;) &amp;&amp;
+                 !text.includes(&#39;show cultural&#39;) &amp;&amp;
+                 !text.includes(&#39;apresentação&#39;) &amp;&amp;
+                 !text.includes(&#39;teatro&#39;) &amp;&amp;
+                 !text.includes(&#39;dança&#39;);
+        })
+        .slice(0, 5)
+        .map(article =&gt; ({
+          title: article.title,
+          link: article.url,
+          description: article.description || &#39;&#39;,
+          pubDate: new Date(article.publishedAt)
+        }));
+      updateNewsCarousel(newsData);
+      cacheData(&#39;news&#39;, JSON.stringify(newsData));
+      updateNewsStatus(&#39;Notícias carregadas via NewsAPI.&#39;);
+    } else {
+      console.error(&#39;Nenhuma notícia encontrada na NewsAPI:&#39;, data.message || &#39;Sem resultados&#39;);
+      document.getElementById(&#39;news&#39;).innerHTML = `&lt;p&gt;Nenhuma notícia encontrada no momento. Novas notícias serão exibidas em breve.&lt;/p&gt;`;
+      updateNewsStatus(&#39;Nenhuma notícia encontrada na NewsAPI.&#39;, true);
+    }
+  } catch (error) {
+    console.error(&#39;Erro ao carregar notícias NewsAPI:&#39;, error);
+    document.getElementById(&#39;news&#39;).innerHTML = `&lt;p&gt;Não foi possível carregar notícias. Verifique sua conexão.&lt;/p&gt;`;
+    updateNewsStatus(&#39;Erro ao carregar notícias NewsAPI.&#39;, true);
+  }
+}
+
+// Função para atualizar o carrossel de notícias
+function updateNewsCarousel(news) {
+  const wrapper = document.querySelector(&#39;#news .swiper-wrapper&#39;);
+  if (!Array.isArray(news) || news.length === 0) {
+    wrapper.innerHTML = `&lt;div class=&quot;swiper-slide&quot;&gt;&lt;p&gt;Nenhuma notícia disponível no momento.&lt;/p&gt;&lt;/div&gt;`;
+    updateNewsStatus(&#39;Nenhuma notícia disponível.&#39;, true);
+    new Swiper(&#39;#news&#39;, { pagination: { el: &#39;.swiper-pagination&#39; } });
+    return;
+  }
+  wrapper.innerHTML = news.map(item =&gt; `
+    &lt;div class=&quot;swiper-slide&quot;&gt;
+      &lt;p class=&quot;mb-2&quot;&gt;&lt;a href=&quot;${item.link}&quot; target=&quot;_blank&quot; class=&quot;text-blue-600 hover:underline&quot;&gt;${item.title}&lt;/a&gt;&lt;/p&gt;
+      &lt;p class=&quot;text-sm text-gray-600&quot;&gt;${item.description ? item.description.substring(0, 100) + &#39;...&#39; : &#39;&#39;}&lt;/p&gt;
+    &lt;/div&gt;
+  `).join(&#39;&#39;);
+  wrapper.insertAdjacentHTML(&#39;afterend&#39;, `&lt;p class=&quot;text-sm text-gray-500 mt-2&quot;&gt;Atualizado em: ${new Date().toLocaleString(&#39;pt-BR&#39;)}&lt;/p&gt;`);
+  new Swiper(&#39;#news&#39;, {
+    pagination: { el: &#39;.swiper-pagination&#39; },
+    navigation: {
+      nextEl: &#39;.swiper-button-next&#39;,
+      prevEl: &#39;.swiper-button-prev&#39;
+    },
+    autoplay: { delay: 5000 },
+    loop: news.length &gt; 1
+  });
+}
+
+// Executar as funções ao carregar a página
+Promise.all([fetchWeather(), fetchCurrency(), fetchNews()]).then(showBannerContent);
+
+// Atualizar automaticamente a cada 30 minutos (1800000 ms)
+setInterval(() =&gt; {
+  fetchWeather();
+  fetchCurrency();
+  fetchNews();
+}, 1800000);
+
+// Adicionar navegação suave
+document.querySelectorAll(&#39;a[href^=&quot;#&quot;]&#39;).forEach(anchor =&gt; {
+  anchor.addEventListener(&#39;click&#39;, function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute(&#39;href&#39;)).scrollIntoView({
+      behavior: &#39;smooth&#39;
+    });
+  });
+});
+</code></pre>
+<p>  
+
