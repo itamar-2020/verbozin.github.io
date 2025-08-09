@@ -11,7 +11,7 @@
   <!-- Swiper -->
   <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css">
 
-  <!-- Font Awesome (para ícones de status) -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -25,13 +25,10 @@
 
   <!-- HEADER -->
   <header class="bg-blue-900 text-white pt-6 pb-10">
-    <!-- Faixa branca para o logo -->
     <div class="max-w-5xl mx-auto px-6">
       <div class="bg-white rounded-xl shadow-lg mx-auto mb-6 flex items-center justify-center h-24 w-full">
-        <!-- IMPORTANTE: ajuste o src se o arquivo do logo tiver outro nome/caminho -->
         <img src="logo.png" alt="Logo Instituto Verbo Vivo Zin" class="h-16 object-contain" />
       </div>
-
       <h1 class="text-3xl md:text-4xl font-bold text-center">Instituto Verbo Vivo Zin</h1>
       <p class="text-center text-lg mt-2">
         Saciando a fome e semeando a Palavra de Deus através de ações missionárias, educacionais e sociais.
@@ -55,31 +52,22 @@
       <div id="banner-loading" class="p-4 text-center text-gray-600 bg-white rounded-lg shadow">
         Carregando atualizações...
       </div>
-
       <div id="banner-content" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
-        <!-- Clima -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Clima em João Pessoa, PB</h3>
           <div id="weather">Carregando...</div>
         </div>
-
-        <!-- Cotações -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Cotações (USD/EUR para BRL)</h3>
           <div id="currency">Carregando...</div>
         </div>
-
-        <!-- Notícias -->
         <div class="bg-white rounded-lg shadow p-4">
           <div class="flex items-center justify-between mb-2">
             <h3 class="font-bold text-blue-900">Notícias: África e Sertão</h3>
             <span id="news-status" class="text-xs text-gray-500"></span>
           </div>
-
           <div id="news" class="swiper-container">
-            <div class="swiper-wrapper">
-              <!-- slides vão aqui -->
-            </div>
+            <div class="swiper-wrapper"></div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
@@ -136,8 +124,14 @@
       <h2 class="text-2xl font-bold text-blue-900 mb-4">Seja um Investidor da Esperança</h2>
       <p class="mb-4">Contribua com nossa missão. Toda doação é transformada em ação concreta para o Reino de Deus.</p>
       <div class="flex flex-wrap gap-3">
-        <a href="#" class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">Doar via PicPay</a>
-        <a href="#" class="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Doar via Mercado Pago</a>
+        <a href="https://picpay.me/itar.oliveira.macedo/0.5" target="_blank" rel="noopener noreferrer"
+           class="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">
+          Doar via PicPay
+        </a>
+        <a href="http://link.mercadopago.com.br/zininstitute" target="_blank" rel="noopener noreferrer"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
+          Doar via Mercado Pago
+        </a>
       </div>
     </section>
 
@@ -156,16 +150,16 @@
   <!-- Swiper JS -->
   <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
 
+  <!-- Scripts -->
   <script>
-    // ==========================================
-    // Configuração do Worker (sem chaves no front)
-    // ==========================================
+    // ============================
+    // CONFIG: USA O SEU WORKER
+    // ============================
     const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
 
-    // ==== Utilidades de cache (mantidas) ====
+    // Cache simples no navegador
     function cacheData(key, data, ttl = 30 * 60 * 1000) {
-      const now = Date.now();
-      localStorage.setItem(key, JSON.stringify({ data, expiry: now + ttl }));
+      localStorage.setItem(key, JSON.stringify({ data, expiry: Date.now() + ttl }));
     }
     function getCachedData(key) {
       const raw = localStorage.getItem(key);
@@ -173,14 +167,10 @@
       try {
         const { data, expiry } = JSON.parse(raw);
         if (Date.now() < expiry) return data;
-        localStorage.removeItem(key);
-      } catch {
-        localStorage.removeItem(key);
-      }
+      } catch {}
+      localStorage.removeItem(key);
       return null;
     }
-
-    // ==== Helpers UI (mantidos) ====
     function showBannerContent() {
       document.getElementById('banner-loading').classList.add('hidden');
       document.getElementById('banner-content').classList.remove('hidden');
@@ -192,8 +182,9 @@
     const esc = s => (s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
     // ======================
-    // CLIMA (via Worker)
-    // ======================
+    // CLIMA (WeatherAPI via Worker)
+    // Worker retorna exatamente o JSON do WeatherAPI /v1/current.json
+    // Campos usados: current.temp_c, current.humidity, current.condition.text
     async function fetchWeather() {
       const cached = getCachedData('weather');
       if (cached) { document.getElementById('weather').innerHTML = cached; return; }
@@ -201,40 +192,39 @@
       const city = 'João Pessoa,BR';
       const url = `${BASE_API}/api/weather?q=${encodeURIComponent(city)}&lang=pt`;
       try {
-        const r = await fetch(url, { method: 'GET' });
+        const r = await fetch(url);
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const data = await r.json(); // WeatherAPI (pass-through no Worker)
+        const data = await r.json();
 
         const cond = data?.current?.condition?.text || 'Tempo';
         const temp = data?.current?.temp_c;
-        const hum = data?.current?.humidity;
+        const hum  = data?.current?.humidity;
 
         const html = `
           <p>${esc(cond)}</p>
-          <p>Temperatura: ${typeof temp === 'number' ? temp : '-'}°C</p>
+          <p>Temperatura: ${typeof temp === 'number' ? temp.toFixed(0) : '-'}°C</p>
           <p>Umidade: ${typeof hum === 'number' ? hum : '-'}%</p>
           <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
         `;
         document.getElementById('weather').innerHTML = html;
         cacheData('weather', html);
-      } catch (e) {
+      } catch {
         document.getElementById('weather').innerHTML = 'Não foi possível carregar o clima.';
       }
     }
 
-    // ==========================================
-    // COTAÇÕES (BRL por 1 USD/EUR) via Worker
-    // ==========================================
+    // ======================================
+    // COTAÇÕES (ExchangeRate via Worker)
+    // Worker retorna: { rates: { USD: <BRL por 1 USD>, EUR: <BRL por 1 EUR> } }
     async function fetchCurrency() {
       const cached = getCachedData('currency');
       if (cached) { document.getElementById('currency').innerHTML = cached; return; }
 
       const url = `${BASE_API}/api/currency?base=USD,EUR`;
       try {
-        const r = await fetch(url, { method: 'GET' });
+        const r = await fetch(url);
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const data = await r.json(); // { rates: { USD: <brl>, EUR: <brl> } }
-
+        const data = await r.json();
         const usdBrl = data?.rates?.USD;
         const eurBrl = data?.rates?.EUR;
 
@@ -250,9 +240,9 @@
       }
     }
 
-    // ======================
-    // NOTÍCIAS (via Worker)
-    // ======================
+    // ======================================
+    // NOTÍCIAS (GNews via Worker)
+    // Worker retorna array de objetos: { title, url, source, publishedAt }
     async function fetchNews() {
       const cached = getCachedData('news');
       if (cached && Array.isArray(cached)) {
@@ -263,49 +253,48 @@
 
       const url = `${BASE_API}/api/news?topic=${encodeURIComponent('África Sertão')}&limit=5`;
       try {
-        const r = await fetch(url, { method: 'GET' });
+        const r = await fetch(url);
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const items = await r.json(); // [{title,url,source,publishedAt}]
+        const items = await r.json();
+
         if (!Array.isArray(items) || items.length === 0) {
-          document.getElementById('news').innerHTML = '<p>Nenhuma notícia disponível no momento.</p>';
+          document.querySelector('#news .swiper-wrapper').innerHTML =
+            '<div class="swiper-slide"><p>Nenhuma notícia disponível no momento.</p></div>';
           updateNewsStatus('Nenhuma notícia no momento.', true);
           new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
           return;
         }
 
-        const newsData = items.slice(0,5).map(a => ({
+        // Normaliza p/ o carousel
+        const newsData = items.slice(0, 5).map(a => ({
           title: a.title,
-          link: a.url,
+          url: a.url,
           description: a.source ? `Fonte: ${a.source}` : '',
-          pubDate: a.publishedAt ? new Date(a.publishedAt) : new Date()
+          publishedAt: a.publishedAt ? new Date(a.publishedAt) : new Date()
         }));
 
         updateNewsCarousel(newsData);
         cacheData('news', newsData);
         updateNewsStatus('Notícias carregadas com sucesso.');
-      } catch (e) {
-        document.getElementById('news').innerHTML = '<p>Não foi possível carregar notícias.</p>';
+      } catch {
+        document.getElementById('news').innerHTML = '<p>Erro ao carregar notícias.</p>';
         updateNewsStatus('Erro ao carregar notícias.', true);
       }
     }
 
     function updateNewsCarousel(news) {
       const wrapper = document.querySelector('#news .swiper-wrapper');
-      if (!Array.isArray(news) || news.length === 0) {
-        wrapper.innerHTML = `<div class="swiper-slide"><p>Nenhuma notícia disponível no momento.</p></div>`;
-        updateNewsStatus('Nenhuma notícia disponível.', true);
-        new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
-        return;
-      }
-
       wrapper.innerHTML = news.map(item => `
         <div class="swiper-slide">
-          <p class="mb-2"><a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${esc(item.title)}</a></p>
-          <p class="text-sm text-gray-600">${esc(item.description ? item.description.substring(0, 100) + '…' : '')}</p>
+          <p class="mb-2">
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              ${esc(item.title)}
+            </a>
+          </p>
+          <p class="text-sm text-gray-600">${esc(item.description || '')}</p>
         </div>
       `).join('');
 
-      // info de atualização
       const info = document.querySelector('#news .last-update');
       if (info) info.remove();
       wrapper.insertAdjacentHTML('afterend',
@@ -319,13 +308,13 @@
       });
     }
 
-    // Inicialização (mantendo seu fluxo)
+    // Inicialização
     Promise.all([fetchWeather(), fetchCurrency(), fetchNews()]).then(showBannerContent);
 
-    // Atualizações a cada 30 min
+    // Atualiza a cada 30min
     setInterval(() => { fetchWeather(); fetchCurrency(); fetchNews(); }, 1800000);
 
-    // Navegação suave (mantida)
+    // Navegação suave
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
