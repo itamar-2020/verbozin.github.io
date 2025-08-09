@@ -11,7 +11,7 @@
   <!-- Swiper -->
   <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css">
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome (para ícones de status) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -52,22 +52,31 @@
       <div id="banner-loading" class="p-4 text-center text-gray-600 bg-white rounded-lg shadow">
         Carregando atualizações...
       </div>
+
       <div id="banner-content" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
+        <!-- Clima -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Clima em João Pessoa, PB</h3>
           <div id="weather">Carregando...</div>
         </div>
+
+        <!-- Cotações -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Cotações (USD/EUR para BRL)</h3>
           <div id="currency">Carregando...</div>
         </div>
+
+        <!-- Notícias -->
         <div class="bg-white rounded-lg shadow p-4">
           <div class="flex items-center justify-between mb-2">
             <h3 class="font-bold text-blue-900">Notícias: África e Sertão</h3>
             <span id="news-status" class="text-xs text-gray-500"></span>
           </div>
+
           <div id="news" class="swiper-container">
-            <div class="swiper-wrapper"></div>
+            <div class="swiper-wrapper">
+              <!-- slides vão aqui -->
+            </div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
@@ -150,14 +159,13 @@
   <!-- Swiper JS -->
   <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
 
-  <!-- Scripts -->
   <script>
-    // ============================
-    // CONFIG: USA O SEU WORKER
-    // ============================
+    // ==========================================
+    // Config: base do seu Cloudflare Worker
+    // ==========================================
     const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
 
-    // Cache simples no navegador
+    // ==== Cache util ====
     function cacheData(key, data, ttl = 30 * 60 * 1000) {
       localStorage.setItem(key, JSON.stringify({ data, expiry: Date.now() + ttl }));
     }
@@ -181,68 +189,57 @@
     }
     const esc = s => (s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
-    // ======================
-    // CLIMA (WeatherAPI via Worker)
-    // Worker retorna exatamente o JSON do WeatherAPI /v1/current.json
-    // Campos usados: current.temp_c, current.humidity, current.condition.text
+    // ==== CLIMA (OpenWeather via Worker: schema original) ====
     async function fetchWeather() {
       const cached = getCachedData('weather');
       if (cached) { document.getElementById('weather').innerHTML = cached; return; }
 
       const city = 'João Pessoa,BR';
-      const url = `${BASE_API}/api/weather?q=${encodeURIComponent(city)}&lang=pt`;
+      const url = `${BASE_API}/api/weather?q=${encodeURIComponent(city)}&lang=pt_br`;
       try {
         const r = await fetch(url);
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
-
-        const cond = data?.current?.condition?.text || 'Tempo';
-        const temp = data?.current?.temp_c;
-        const hum  = data?.current?.humidity;
-
-        const html = `
-          <p>${esc(cond)}</p>
-          <p>Temperatura: ${typeof temp === 'number' ? temp.toFixed(0) : '-'}°C</p>
-          <p>Umidade: ${typeof hum === 'number' ? hum : '-'}%</p>
-          <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
-        `;
-        document.getElementById('weather').innerHTML = html;
-        cacheData('weather', html);
+        if (data?.cod === 200 || (data?.main && data?.weather)) {
+          const desc = data.weather[0]?.description || 'Tempo';
+          const html = `
+            <p>${esc(desc.charAt(0).toUpperCase() + desc.slice(1))}</p>
+            <p>Temperatura: ${data.main?.temp ?? '-'}°C</p>
+            <p>Umidade: ${data.main?.humidity ?? '-'}%</p>
+            <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
+          `;
+          document.getElementById('weather').innerHTML = html;
+          cacheData('weather', html);
+        } else {
+          document.getElementById('weather').innerHTML = 'Não foi possível carregar o clima.';
+        }
       } catch {
         document.getElementById('weather').innerHTML = 'Não foi possível carregar o clima.';
       }
     }
 
-    // ======================================
-    // COTAÇÕES (ExchangeRate via Worker)
-    // Worker retorna: { rates: { USD: <BRL por 1 USD>, EUR: <BRL por 1 EUR> } }
+    // ==== COTAÇÕES (usa o Worker e mostra BRL por 1 USD/EUR) ====
     async function fetchCurrency() {
       const cached = getCachedData('currency');
       if (cached) { document.getElementById('currency').innerHTML = cached; return; }
 
-      const url = `${BASE_API}/api/currency?base=USD,EUR`;
       try {
-        const r = await fetch(url);
+        const r = await fetch(`${BASE_API}/api/currency?base=USD,EUR`);
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const data = await r.json();
-        const usdBrl = data?.rates?.USD;
-        const eurBrl = data?.rates?.EUR;
-
-        const html = `
-          <p>USD → BRL: R$ ${typeof usdBrl === 'number' ? usdBrl.toFixed(2) : '-'}</p>
-          <p>EUR → BRL: R$ ${typeof eurBrl === 'number' ? eurBrl.toFixed(2) : '-'}</p>
+        const d = await r.json(); // { USD: 5.43, EUR: 5.90 }
+        const h = `
+          <p>USD → BRL: R$ ${typeof d.USD === 'number' ? d.USD.toFixed(2) : '-'}</p>
+          <p>EUR → BRL: R$ ${typeof d.EUR === 'number' ? d.EUR.toFixed(2) : '-'}</p>
           <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
         `;
-        document.getElementById('currency').innerHTML = html;
-        cacheData('currency', html);
+        document.getElementById('currency').innerHTML = h;
+        cacheData('currency', h);
       } catch {
         document.getElementById('currency').innerHTML = 'Não foi possível carregar cotações.';
       }
     }
 
-    // ======================================
-    // NOTÍCIAS (GNews via Worker)
-    // Worker retorna array de objetos: { title, url, source, publishedAt }
+    // ==== NOTÍCIAS (NewsAPI via Worker, simplificado) ====
     async function fetchNews() {
       const cached = getCachedData('news');
       if (cached && Array.isArray(cached)) {
@@ -251,30 +248,19 @@
         return;
       }
 
-      const url = `${BASE_API}/api/news?topic=${encodeURIComponent('África Sertão')}&limit=5`;
+      const topic = 'África Sertão';
       try {
-        const r = await fetch(url);
+        const r = await fetch(`${BASE_API}/api/news?topic=${encodeURIComponent(topic)}&limit=5`);
         if (!r.ok) throw new Error('HTTP ' + r.status);
-        const items = await r.json();
-
-        if (!Array.isArray(items) || items.length === 0) {
-          document.querySelector('#news .swiper-wrapper').innerHTML =
-            '<div class="swiper-slide"><p>Nenhuma notícia disponível no momento.</p></div>';
-          updateNewsStatus('Nenhuma notícia no momento.', true);
+        const items = await r.json(); // [{title, link, description, pubDate}]
+        if (!Array.isArray(items) || !items.length) {
+          document.getElementById('news').innerHTML = '<p>Nenhuma notícia disponível.</p>';
+          updateNewsStatus('Nenhuma notícia disponível.', true);
           new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
           return;
         }
-
-        // Normaliza p/ o carousel
-        const newsData = items.slice(0, 5).map(a => ({
-          title: a.title,
-          url: a.url,
-          description: a.source ? `Fonte: ${a.source}` : '',
-          publishedAt: a.publishedAt ? new Date(a.publishedAt) : new Date()
-        }));
-
-        updateNewsCarousel(newsData);
-        cacheData('news', newsData);
+        updateNewsCarousel(items);
+        cacheData('news', items);
         updateNewsStatus('Notícias carregadas com sucesso.');
       } catch {
         document.getElementById('news').innerHTML = '<p>Erro ao carregar notícias.</p>';
@@ -286,32 +272,17 @@
       const wrapper = document.querySelector('#news .swiper-wrapper');
       wrapper.innerHTML = news.map(item => `
         <div class="swiper-slide">
-          <p class="mb-2">
-            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
-              ${esc(item.title)}
-            </a>
-          </p>
-          <p class="text-sm text-gray-600">${esc(item.description || '')}</p>
+          <p class="mb-2"><a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${esc(item.title)}</a></p>
+          <p class="text-sm text-gray-600">${esc(item.description ? item.description.substring(0, 100) + '…' : '')}</p>
         </div>
       `).join('');
-
-      const info = document.querySelector('#news .last-update');
-      if (info) info.remove();
-      wrapper.insertAdjacentHTML('afterend',
-        `<p class="last-update text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`);
-
-      new Swiper('#news', {
-        pagination: { el: '.swiper-pagination' },
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        autoplay: { delay: 5000 },
-        loop: news.length > 1
-      });
+      const info = document.querySelector('#news .last-update'); if (info) info.remove();
+      wrapper.insertAdjacentHTML('afterend', `<p class="last-update text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`);
+      new Swiper('#news', { pagination: { el: '.swiper-pagination' }, navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }, autoplay: { delay: 5000 }, loop: news.length > 1 });
     }
 
     // Inicialização
     Promise.all([fetchWeather(), fetchCurrency(), fetchNews()]).then(showBannerContent);
-
-    // Atualiza a cada 30min
     setInterval(() => { fetchWeather(); fetchCurrency(); fetchNews(); }, 1800000);
 
     // Navegação suave
