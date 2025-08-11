@@ -218,7 +218,7 @@
       }
     }
 
-    // NOTÍCIAS (GNews via Worker) – busca ampliada
+    // NOTÍCIAS (NewsAPI via Worker) – busca ampliada
     async function fetchNews() {
       const cached = getCachedData('news');
       if (cached && Array.isArray(cached)) {
