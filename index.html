@@ -48,7 +48,7 @@
   <!-- CONTEÚDO + SIDEBAR -->
   <section class="max-w-5xl mx-auto p-6 animate-fade-in">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-      <!-- CONTEÚDO PRINCIPAL (esquerda) -->
+      <!-- CONTEÚDO PRINCIPAL -->
       <main class="md:col-span-8 space-y-12">
         <section id="missao">
           <h2 class="text-2xl font-bold text-blue-900 mb-4">Nossa Missão</h2>
@@ -114,22 +114,19 @@
 
       <!-- SIDEBAR (direita) -->
       <aside class="md:col-span-4 space-y-4">
-        <!-- Clima -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Clima em João Pessoa, PB</h3>
           <div id="weather">Carregando...</div>
         </div>
 
-        <!-- Cotações -->
         <div class="bg-white rounded-lg shadow p-4">
           <h3 class="font-bold text-blue-900 mb-2">Cotações (USD/EUR → BRL)</h3>
           <div id="currency">Carregando...</div>
         </div>
 
-        <!-- Notícias -->
         <div class="bg-white rounded-lg shadow p-4">
           <div class="flex items-center justify-between mb-2">
-            <h3 class="font-bold text-blue-900">Notícias: África e Sertão</h3>
+            <h3 class="font-bold text-blue-900">Notícias</h3>
             <span id="news-status" class="text-xs text-gray-500"></span>
           </div>
           <div id="news" class="swiper-container">
@@ -154,10 +151,9 @@
 
   <!-- Scripts -->
   <script>
-    // Base do seu Cloudflare Worker
     const BASE_API = 'https://verbozin-api.itamar-o-macedo.workers.dev';
 
-    // Cache simplificado
+    // Cache simples
     function cacheData(key, data, ttl = 30 * 60 * 1000) {
       localStorage.setItem(key, JSON.stringify({ data, expiry: Date.now() + ttl }));
     }
@@ -171,47 +167,42 @@
       localStorage.removeItem(key);
       return null;
     }
-    function updateNewsStatus(msg, isError=false) {
-      const icon = isError ? 'fa-exclamation-circle text-red-500' : 'fa-check-circle text-green-500';
-      document.getElementById('news-status').innerHTML = `<i class="fas ${icon} mr-1"></i>${msg}`;
-    }
     const esc = s => (s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    function updateNewsStatus(msg, err=false){
+      document.getElementById('news-status').innerHTML =
+        `<i class="fas ${err?'fa-exclamation-circle text-red-500':'fa-check-circle text-green-500'} mr-1"></i>${msg}`;
+    }
 
     // CLIMA (OpenWeather via Worker)
     async function fetchWeather() {
       const cached = getCachedData('weather');
       if (cached) { document.getElementById('weather').innerHTML = cached; return; }
-
-      const url = `${BASE_API}/api/weather?q=${encodeURIComponent('João Pessoa,BR')}&lang=pt_br`;
       try {
-        const r = await fetch(url);
+        const r = await fetch(`${BASE_API}/api/weather?q=${encodeURIComponent('João Pessoa,BR')}&lang=pt_br`);
         const text = await r.text();
-        if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + text);
+        if (!r.ok) throw new Error(text);
         const data = JSON.parse(text);
-
         if (data?.main && Array.isArray(data?.weather)) {
           const desc = data.weather[0]?.description || 'Tempo';
           const html = `
             <p>${esc(desc.charAt(0).toUpperCase() + desc.slice(1))}</p>
             <p>Temperatura: ${data.main?.temp ?? '-'}°C</p>
             <p>Umidade: ${data.main?.humidity ?? '-'}%</p>
-            <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
-          `;
+            <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`;
           document.getElementById('weather').innerHTML = html;
           cacheData('weather', html);
         } else {
-          document.getElementById('weather').innerHTML = 'Clima indisponível no momento.';
+          document.getElementById('weather').textContent = 'Clima indisponível.';
         }
-      } catch (e) {
-        document.getElementById('weather').innerHTML = 'Não foi possível carregar o clima.';
+      } catch {
+        document.getElementById('weather').textContent = 'Não foi possível carregar o clima.';
       }
     }
 
-    // COTAÇÕES (ExchangeRate via Worker) – BRL por 1 USD/EUR
+    // COTAÇÕES (ExchangeRate via Worker)
     async function fetchCurrency() {
       const cached = getCachedData('currency');
       if (cached) { document.getElementById('currency').innerHTML = cached; return; }
-
       try {
         const r = await fetch(`${BASE_API}/api/currency?base=USD,EUR`);
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -219,26 +210,24 @@
         const h = `
           <p>USD → BRL: R$ ${typeof d.USD === 'number' ? d.USD.toFixed(2) : '-'}</p>
           <p>EUR → BRL: R$ ${typeof d.EUR === 'number' ? d.EUR.toFixed(2) : '-'}</p>
-          <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>
-        `;
+          <p class="text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`;
         document.getElementById('currency').innerHTML = h;
         cacheData('currency', h);
       } catch {
-        document.getElementById('currency').innerHTML = 'Não foi possível carregar cotações.';
+        document.getElementById('currency').textContent = 'Não foi possível carregar cotações.';
       }
     }
 
-    // NOTÍCIAS (NewsAPI via Worker)
+    // NOTÍCIAS (GNews via Worker) – foco em infortúnios
     async function fetchNews() {
       const cached = getCachedData('news');
       if (cached && Array.isArray(cached)) {
-        renderNews(cached);
-        updateNewsStatus('Notícias carregadas do cache.');
-        return;
+        renderNews(cached); updateNewsStatus('Notícias do cache.'); return;
       }
-
-      // consulta mais ampla para garantir resultados
-      const query = '(pobreza OR crianças OR fome OR desnutrição OR seca OR missão OR humanitária) AND (África OR Sertão OR Angola)';
+      const query =
+        '(desabastecimento OR fome OR insegurança alimentar OR doenças OR epidemia OR surtos OR seca OR '+
+        'estiagem OR desnutrição OR deslocados OR refugiados OR crise humanitária OR calamidade) '+
+        'AND (África OR Sertão OR Angola OR Moçambique OR Brasil)';
       try {
         const r = await fetch(`${BASE_API}/api/news?q=${encodeURIComponent(query)}&limit=5`);
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -252,7 +241,7 @@
         }
         renderNews(items);
         cacheData('news', items);
-        updateNewsStatus('Notícias carregadas com sucesso.');
+        updateNewsStatus('Notícias carregadas.');
       } catch {
         document.getElementById('news').innerHTML = '<p>Erro ao carregar notícias.</p>';
         updateNewsStatus('Erro ao carregar notícias.', true);
@@ -260,29 +249,27 @@
     }
 
     function renderNews(items) {
-      const wrapper = document.querySelector('#news .swiper-wrapper');
-      wrapper.innerHTML = items.map(item => `
+      const w = document.querySelector('#news .swiper-wrapper');
+      w.innerHTML = items.map(i => `
         <div class="swiper-slide">
-          <p class="mb-2"><a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${esc(item.title)}</a></p>
-          <p class="text-sm text-gray-600">${esc(item.description ? item.description.substring(0, 100) + '…' : '')}</p>
-        </div>
-      `).join('');
+          <p class="mb-2"><a href="${i.link}" target="_blank" rel="noopener noreferrer"
+             class="text-blue-600 hover:underline">${esc(i.title)}</a></p>
+          <p class="text-sm text-gray-600">${esc(i.description ? i.description.slice(0,100)+'…' : '')}</p>
+        </div>`).join('');
       const info = document.querySelector('#news .last-update'); if (info) info.remove();
-      wrapper.insertAdjacentHTML('afterend', `<p class="last-update text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`);
-      new Swiper('#news', { pagination: { el: '.swiper-pagination' }, navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }, autoplay: { delay: 5000 }, loop: items.length > 1 });
+      w.insertAdjacentHTML('afterend',
+        `<p class="last-update text-sm text-gray-500 mt-2">Atualizado em: ${new Date().toLocaleString('pt-BR')}</p>`);
+      new Swiper('#news', {
+        pagination: { el: '.swiper-pagination' },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        autoplay: { delay: 5000 },
+        loop: items.length > 1
+      });
     }
 
-    // Init
+    // Init + atualizações
     fetchWeather(); fetchCurrency(); fetchNews();
     setInterval(() => { fetchWeather(); fetchCurrency(); fetchNews(); }, 1800000);
-
-    // Navegação suave
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-      });
-    });
   </script>
 </body>
 </html>
