@@ -218,20 +218,34 @@
       }
     }
 
-    // NOTÍCIAS (GNews via Worker) – foco em infortúnios
+    // NOTÍCIAS (GNews via Worker) – busca ampliada
     async function fetchNews() {
       const cached = getCachedData('news');
       if (cached && Array.isArray(cached)) {
         renderNews(cached); updateNewsStatus('Notícias do cache.'); return;
       }
-      const query =
-        '(desabastecimento OR fome OR insegurança alimentar OR doenças OR epidemia OR surtos OR seca OR '+
-        'estiagem OR desnutrição OR deslocados OR refugiados OR crise humanitária OR calamidade) '+
-        'AND (África OR Sertão OR Angola OR Moçambique OR Brasil)';
+
+      const termos = [
+        'desabastecimento','escassez','fome','insegurança alimentar','desnutrição',
+        'doenças','epidemia','surto','cólera','dengue','malária','sarampo',
+        'seca','estiagem','enchentes','inundações','deslizamentos',
+        'crise','crise humanitária','calamidade','emergência','deslocados','refugiados',
+        'pobreza','mortalidade','falta de água','falta de medicamentos'
+      ];
+      const regioes = ['África','Sertão','Nordeste','Angola','Moçambique','Brasil'];
+
+      const query1 = `(${termos.join(' OR ')}) (${regioes.join(' OR ')})`;
+      const query2 = `(${termos.join(' OR ')})`; // fallback sem região
+
       try {
-        const r = await fetch(`${BASE_API}/api/news?q=${encodeURIComponent(query)}&limit=5`);
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const items = await r.json(); // [{title, link, description, pubDate}]
+        let items = [];
+        let r = await fetch(`${BASE_API}/api/news?q=${encodeURIComponent(query1)}&limit=8`);
+        if (r.ok) items = await r.json();
+        if (!Array.isArray(items) || !items.length) {
+          r = await fetch(`${BASE_API}/api/news?q=${encodeURIComponent(query2)}&limit=8`);
+          if (r.ok) items = await r.json();
+        }
+
         if (!Array.isArray(items) || !items.length) {
           document.querySelector('#news .swiper-wrapper').innerHTML =
             '<div class="swiper-slide"><p>Nenhuma notícia disponível.</p></div>';
@@ -239,6 +253,7 @@
           new Swiper('#news', { pagination: { el: '.swiper-pagination' } });
           return;
         }
+
         renderNews(items);
         cacheData('news', items);
         updateNewsStatus('Notícias carregadas.');
